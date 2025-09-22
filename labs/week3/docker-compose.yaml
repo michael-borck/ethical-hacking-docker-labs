@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  wireshark:
+    image: lscr.io/linuxserver/wireshark:latest
+    container_name: week3-wireshark
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ../../data/caps:/caps:ro  # Shared packet captures
+    ports:
+      - 3000:3000
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      traffic_net:
+        ipv4_address: 172.30.0.2
+    restart: unless-stopped
+
+  sample-target:
+    image: nicolaka/netshoot
+    container_name: week3-target
+    command: tail -f /dev/null  # Dummy target for simulated traffic
+    networks:
+      traffic_net:
+        ipv4_address: 172.30.0.3
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+networks:
+  traffic_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

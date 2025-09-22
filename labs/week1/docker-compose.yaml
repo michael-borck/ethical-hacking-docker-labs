@@ -1,0 +1,61 @@
+version: '3.9'
+services:
+  proxy:
+    image: haproxy:1
+    container_name: proxy
+    restart: always
+    ports:
+      - 14500:14500
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:Z
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.2
+
+  wireshark:
+    image: "ffeldhaus/wireshark:0.5"
+    container_name: wireshark
+    restart: always
+    privileged: true
+    network_mode: "service:proxy"
+    environment:
+      - XPRA_PW=wireshark
+    volumes:
+      - ./data:/home/wireshark
+
+  secutils:
+    image: michaelborck/secutils
+    container_name: secutils
+    privileged: true
+    command: ["/bin/sh", "-c", "/start.sh && exec /usr/bin/supervisord"]
+    ports:
+      - "6080:80"
+    environment:
+      - USER=root
+      - PASSWORD=rootpassword
+      - SSL=false
+    volumes:
+      - ./data:/root/Desktop/data
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.5
+
+  attacker:
+    image: ethical-base
+    container_name: week1-attacker
+    stdin_open: true
+    tty: true
+    networks:
+      - custom_network
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24

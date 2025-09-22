@@ -1,0 +1,61 @@
+services:
+  # Main hacking tools container
+  hacking-tools:
+    image: ethical-base
+    container_name: password-cracking-lab
+    hostname: hacklab
+    stdin_open: true
+    tty: true
+    networks:
+      - labnet
+    volumes:
+      - ./wordlists:/wordlists
+      - ./hashes:/hashes
+      - ./scripts:/scripts
+    command: /bin/bash -c "
+      pip3 install --break-system-packages zxcvbn &&
+      echo 'Lab environment ready!' &&
+      /bin/bash"
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+
+  # Target SSH server for Hydra practice
+  ssh-target:
+    image: ubuntu:22.04
+    container_name: ssh-target
+    hostname: target-server
+    networks:
+      - labnet
+    command: /bin/bash -c "
+      apt-get install -y openssh-server &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      echo 'root:password123' | chpasswd &&
+      useradd -m admin && echo 'admin:letmein' | chpasswd &&
+      useradd -m user1 && echo 'user1:qwerty' | chpasswd &&
+      sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config &&
+      sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      echo 'SSH Target Server Ready' &&
+      /usr/sbin/sshd -D"
+
+  # Web target for web-based password attacks
+  web-target:
+    image: alpine:latest
+    container_name: web-target
+    hostname: web-server
+    networks:
+      - labnet
+    ports:
+      - "8080:80"
+    command: /bin/sh -c "
+      apk update &&
+      apk add --no-cache python3 &&
+      mkdir -p /www &&
+      echo '<html><body><h1>Login Page</h1><form method=\"post\"><input name=\"user\"><input type=\"password\" name=\"pass\"><button>Login</button></form></body></html>' > /www/index.html &&
+      cd /www &&
+      python3 -m http.server 80"
+
+networks:
+  labnet:
+    driver: bridge

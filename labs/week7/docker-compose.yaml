@@ -1,0 +1,152 @@
+services:
+  wireshark:
+    image: lscr.io/linuxserver/wireshark:latest
+    container_name: wireshark
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./caps:/caps
+    ports:
+      - 3000:3000
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.2
+
+  ubuntu-desktop:
+    image: dorowu/ubuntu-desktop-lxde-vnc
+    container_name: ubuntu-desktop
+    environment:
+      - USER=root
+      - PASSWORD=root
+    ports:
+      - "5900:5900" # VNC port
+      - "6080:80" # Web interface (noVNC)
+    volumes:
+      - ./config:/config
+    shm_size: "1gb"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.3
+
+  secutils:
+    image: michaelborck/secutils
+    container_name: secutils
+    ports:
+      - "6081:80"
+    environment:
+      - USER=root
+      - PASSWORD=rootpassword
+      - SSL=false
+    command: ["/bin/sh", "-c", "/start.sh && exec /usr/bin/supervisord"]
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.4
+
+  attacker:
+    image: ethical-base
+    container_name: week7-attacker
+    stdin_open: true
+    tty: true
+    networks:
+      security_net
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+
+  workstation:
+    image: alpine:latest
+    container_name: workstation
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.5
+
+  netshoot:
+    image: nicolaka/netshoot
+    container_name: netshoot
+    command: tail -f /dev/null # Keeps the container running
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.6
+    cap_add:
+      - NET_ADMIN # Allows advanced networking operations
+    security_opt:
+      - seccomp:unconfined # Allows for more system calls, useful for some networking tools
+
+  ldap:
+    image: osixia/openldap
+    container_name: ldap
+    environment:
+      LDAP_ORGANISATION: "Example Organization"
+      LDAP_DOMAIN: "example.org"
+      LDAP_ADMIN_PASSWORD: "admin"
+    ports:
+      - "389:389"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.7
+
+  mail:
+    image: mailhog/mailhog
+    container_name: mail
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.8
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "rootpassword"
+      MYSQL_DATABASE: "exampledb"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "userpassword"
+    ports:
+      - "3306:3306"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.9
+
+  telnet:
+    image: alpine:latest
+    container_name: telnet
+    command: sh -c "apk add --no-cache busybox-extras && /usr/sbin/telnetd -F"
+    ports:
+      - "23:23"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.10
+
+  juice-shop:
+    image: bkimminich/juice-shop
+    container_name: juice-shop
+    ports:
+      - 3012:3000
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.11
+
+  dvwa:
+    image: vulnerables/web-dvwa
+    container_name: dvwa
+    ports:
+      - "8085:80"
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.12
+
+networks:
+  security_net:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

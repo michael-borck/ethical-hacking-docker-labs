@@ -1,0 +1,117 @@
+services:
+  # Attacker Machine (Kali Linux)
+  attacker:
+    image: ethical-base
+    container_name: de-ice-attacker
+    hostname: kali-attacker
+    tty: true
+    stdin_open: true
+    networks:
+      - lab_network
+    volumes:
+      - ./attacker-tools:/root/tools
+      - ./lab-files:/root/lab
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      gunzip /usr/share/wordlists/rockyou.txt.gz 2>/dev/null || true &&
+      echo 'Kali attacker ready! Use: docker exec -it de-ice-attacker bash' &&
+      tail -f /dev/null"
+    restart: unless-stopped
+
+  # Target Services
+  web:
+    image: httpd:2.4
+    container_name: de-ice-web
+    hostname: target-web
+    ports:
+      - "80:80"
+    volumes:
+      - ./web-content:/usr/local/apache2/htdocs:ro
+    networks:
+      - lab_network
+    restart: unless-stopped
+
+  ssh-target:
+    image: ubuntu:20.04
+    container_name: de-ice-ssh
+    hostname: target-ssh
+    command: >
+      /bin/bash -c "
+      apt update && 
+      apt install -y openssh-server sudo &&
+      useradd -m -s /bin/bash aadams &&
+      echo 'aadams:smadaa' | chpasswd &&
+      useradd -m -s /bin/bash bbanter &&
+      echo 'bbanter:password' | chpasswd &&
+      echo 'PermitRootLogin no' >> /etc/ssh/sshd_config &&
+      echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config &&
+      echo 'Port 22' >> /etc/ssh/sshd_config &&
+      service ssh start &&
+      tail -f /dev/null"
+    ports:
+      - "2222:22"
+    networks:
+      - lab_network
+    restart: unless-stopped
+
+  ftp:
+    image: ubuntu:20.04
+    container_name: de-ice-ftp
+    hostname: target-ftp
+    command: >
+      /bin/bash -c "
+      apt update &&
+      apt install -y vsftpd &&
+      mkdir -p /var/ftp/pub &&
+      cp -r /data/* /var/ftp/pub/ 2>/dev/null || true &&
+      echo 'anonymous_enable=YES' > /etc/vsftpd.conf &&
+      echo 'local_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'write_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'anon_upload_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'anon_mkdir_write_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'dirmessage_enable=YES' >> /etc/vsftpd.conf &&
+      echo 'xferlog_enable=YES' >> /etc/vsftpd.conf &&
+      echo 'connect_from_port_20=YES' >> /etc/vsftpd.conf &&
+      echo 'listen=YES' >> /etc/vsftpd.conf &&
+      echo 'listen_ipv6=NO' >> /etc/vsftpd.conf &&
+      echo 'anon_root=/var/ftp' >> /etc/vsftpd.conf &&
+      service vsftpd start &&
+      tail -f /dev/null"
+    volumes:
+      - ./ftp-data:/data
+    ports:
+      - "21:21"
+    networks:
+      - lab_network
+    restart: unless-stopped
+
+  smtp:
+    image: mailhog/mailhog:latest
+    container_name: de-ice-smtp
+    hostname: target-smtp
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - lab_network
+    restart: unless-stopped
+
+  mail:
+    image: dovecot/dovecot:latest
+    container_name: de-ice-mail
+    hostname: target-mail
+    ports:
+      - "110:110"   # POP3
+      - "143:143"   # IMAP
+    networks:
+      - lab_network
+    restart: unless-stopped
+
+networks:
+  lab_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

@@ -1,0 +1,38 @@
+2025-08-26 04:44:33.275847046  Server listening on 0.0.0.0 port 2222.
+2025-08-26 04:44:33.275927705  Server listening on :: port 2222.
+2025-08-26 04:44:33.278619669  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2025-08-26 04:44:33.284922448  Connection closed by ::1 port 49696
+2025-08-26 04:52:44.632470718  Received signal 15; terminating.
+2025-08-26 04:53:27.263895381  Server listening on 0.0.0.0 port 2222.
+2025-08-26 04:53:27.263969737  Server listening on :: port 2222.
+2025-08-26 04:53:27.266438489  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2025-08-26 04:53:27.277539975  Connection closed by ::1 port 54718
+2025-08-26 05:52:24.290641795  Received signal 15; terminating.
+2025-08-26 05:52:40.761724031  Server listening on 0.0.0.0 port 2222.
+2025-08-26 05:52:40.761795685  Server listening on :: port 2222.
+2025-08-26 05:52:40.762469050  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2025-08-26 05:52:40.772540385  Connection closed by ::1 port 52822
+2025-08-26 06:05:36.908327911  Received signal 15; terminating.
+2025-08-26 07:33:29.711816616  Server listening on 0.0.0.0 port 2222.
+2025-08-26 07:33:29.711900035  Server listening on :: port 2222.
+2025-08-26 07:33:30.714053047  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2025-08-26 07:33:30.728692281  Connection closed by ::1 port 42842
+2025-08-26 07:34:51.254425347  Connection closed by 172.20.0.7 port 56642
+2025-08-26 07:34:51.278310975  Protocol major versions differ: 2 vs. 1
+2025-08-26 07:34:51.278316856  Protocol major versions differ: 2 vs. 1
+2025-08-26 07:34:51.278324062  banner exchange: Connection from 172.20.0.7 port 56646: could not read protocol version
+2025-08-26 07:34:51.278328633  banner exchange: Connection from 172.20.0.7 port 56660: could not read protocol version
+2025-08-26 07:34:51.300067441  Unable to negotiate with 172.20.0.7 port 56676: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:34:51.316984356  Unable to negotiate with 172.20.0.7 port 56684: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:34:51.338279228  Unable to negotiate with 172.20.0.7 port 56694: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:34:51.355061460  Unable to negotiate with 172.20.0.7 port 56706: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:34:51.370863592  Unable to negotiate with 172.20.0.7 port 56712: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:34:51.387498951  Unable to negotiate with 172.20.0.7 port 56724: no matching key exchange method found. Their offer: diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256 [preauth]
+2025-08-26 07:35:31.143121964  Failed password for aadams from 172.20.0.7 port 36506 ssh2
+2025-08-26 07:35:31.151299604  Failed password for aadams from 172.20.0.7 port 36506 ssh2
+2025-08-26 07:35:31.161490869  Connection closed by authenticating user aadams 172.20.0.7 port 36506 [preauth]
+2025-08-26 07:38:32.343025582  Connection closed by 172.20.0.7 port 37072
+2025-08-26 07:38:57.924467767  Failed password for aadams from 172.20.0.7 port 47490 ssh2
+2025-08-26 07:38:57.932707552  Failed password for aadams from 172.20.0.7 port 47490 ssh2
+2025-08-26 07:38:57.941636042  Connection closed by authenticating user aadams 172.20.0.7 port 47490 [preauth]
+2025-08-26 07:40:10.678014501  Received signal 15; terminating.
