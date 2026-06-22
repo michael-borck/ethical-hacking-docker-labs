@@ -25,9 +25,12 @@ services:
     image: ubuntu:22.04
     container_name: ssh-target
     hostname: target-server
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
     networks:
       - labnet
     command: /bin/bash -c "
+      apt-get update &&
       apt-get install -y openssh-server &&
       mkdir -p /var/run/sshd &&
       ssh-keygen -A &&
@@ -41,20 +44,16 @@ services:
 
   # Web target for web-based password attacks
   web-target:
-    image: alpine:latest
+    image: python:3.12-alpine
     container_name: web-target
     hostname: web-server
     networks:
       - labnet
     ports:
       - "8080:80"
-    command: /bin/sh -c "
-      apk update &&
-      apk add --no-cache python3 &&
-      mkdir -p /www &&
-      echo '<html><body><h1>Login Page</h1><form method=\"post\"><input name=\"user\"><input type=\"password\" name=\"pass\"><button>Login</button></form></body></html>' > /www/index.html &&
-      cd /www &&
-      python3 -m http.server 80"
+    volumes:
+      - ./web-target:/app:ro
+    command: python3 /app/login_server.py
 
 networks:
   labnet:

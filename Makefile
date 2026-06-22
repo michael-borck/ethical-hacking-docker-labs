@@ -37,23 +37,20 @@ run-week10:
 	cd labs/week10 && docker compose up -d
 
 run-week11:
-	cd labs/week11 && docker compose up -d
+	@echo "Week 11: Physical access controls - no Docker needed. Review README."
+	@cat labs/week11/README.md 2>/dev/null || echo "Create README for Week 11 physical security."
 
 run-week12:
-	cd labs/week12 && docker compose up -d
+	@echo "Week 12: Social engineering - no Docker needed. Review README."
+	@cat labs/week12/README.md 2>/dev/null || echo "Create README for Week 12 social engineering."
 
 # Build all weeks (if any have Dockerfiles)
 build-all:
 	$(MAKE) build-base
-	for week in {1..12}; do \
-		if [ -f "labs/week$$week/Dockerfile" ]; then \
-			(cd labs/week$$week && docker compose build); \
-		fi; \
-	done
 
-# Stop all weeks
+# Stop all weeks that have compose files
 stop-all:
-	for week in {1..12}; do \
+	for week in 1 3 4 5 6 7 8 9 10; do \
 		(cd labs/week$$week && docker compose down 2>/dev/null || true); \
 	done
 

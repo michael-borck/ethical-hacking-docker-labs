@@ -1,0 +1,100 @@
+version: '3.9'
+
+# Week 4: Reconnaissance and Information Gathering
+# Lab focus: Nmap scanning — version detection, OS fingerprinting, port enumeration
+
+services:
+
+  week4-attacker:
+    image: ethical-base
+    container_name: week4-attacker
+    hostname: kali-attacker
+    stdin_open: true
+    tty: true
+    user: root
+    networks:
+      week4-scannet:
+        ipv4_address: 172.40.0.2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      /bin/bash -c "
+      echo '======================================================' &&
+      echo ' Week 4 Attacker Ready' &&
+      echo ' Targets on 172.40.0.0/24:' &&
+      echo '   172.40.0.10  week4-web  (HTTP/Nginx)' &&
+      echo '   172.40.0.11  week4-ftp  (FTP/vsftpd)' &&
+      echo '   172.40.0.12  week4-ssh  (SSH/OpenSSH)' &&
+      echo ' Enter: docker exec -it week4-attacker bash' &&
+      echo '======================================================' &&
+      tail -f /dev/null"
+
+  week4-web:
+    image: nginx:alpine
+    container_name: week4-web
+    hostname: web-server
+    networks:
+      week4-scannet:
+        ipv4_address: 172.40.0.10
+    volumes:
+      - ./web-content:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  week4-ftp:
+    image: ubuntu:22.04
+    container_name: week4-ftp
+    hostname: ftp-server
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      week4-scannet:
+        ipv4_address: 172.40.0.11
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q vsftpd &&
+      mkdir -p /var/ftp/pub /var/run/vsftpd/empty &&
+      echo 'CyberCorp Internal Repository - Authorised access only.' > /var/ftp/pub/README.txt &&
+      echo 'anonymous_enable=YES' > /etc/vsftpd.conf &&
+      echo 'local_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'write_enable=NO' >> /etc/vsftpd.conf &&
+      echo 'dirmessage_enable=YES' >> /etc/vsftpd.conf &&
+      echo 'listen=YES' >> /etc/vsftpd.conf &&
+      echo 'listen_ipv6=NO' >> /etc/vsftpd.conf &&
+      echo 'anon_root=/var/ftp' >> /etc/vsftpd.conf &&
+      echo 'secure_chroot_dir=/var/run/vsftpd/empty' >> /etc/vsftpd.conf &&
+      echo 'ftpd_banner=CyberCorp FTP Server v3.0.5 Authorised Users Only' >> /etc/vsftpd.conf &&
+      vsftpd /etc/vsftpd.conf"
+    restart: unless-stopped
+
+  week4-ssh:
+    image: ubuntu:22.04
+    container_name: week4-ssh
+    hostname: ssh-server
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      week4-scannet:
+        ipv4_address: 172.40.0.12
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q openssh-server &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      useradd -m -s /bin/bash sysadmin &&
+      echo 'sysadmin:ChangeMe2024!' | chpasswd &&
+      sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      echo 'Banner /etc/ssh/banner' >> /etc/ssh/sshd_config &&
+      printf '**********************************************\n* CyberCorp Remote Management System v2.1   *\n* Authorised access only. Connections logged.*\n**********************************************\n' > /etc/ssh/banner &&
+      /usr/sbin/sshd -D"
+    restart: unless-stopped
+
+networks:
+  week4-scannet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/24

@@ -1,0 +1,107 @@
+version: '3.9'
+
+# Week 9: Lateral Movement Between Systems and Services
+#
+# Network topology:
+#   EXTERNAL (172.90.10.0/24) — attacker lives here, can reach pivot host only
+#   INTERNAL (172.90.20.0/24) — internal targets, only reachable via pivot host
+#
+#   week9-attacker  (172.90.10.2)  — external only
+#   week9-pivot     (172.90.10.10 + 172.90.20.10) — both networks (the hop)
+#   week9-internal-web  (172.90.20.20) — internal only
+#   week9-internal-db   (172.90.20.21) — internal only
+
+services:
+
+  week9-attacker:
+    image: metasploitframework/metasploit-framework:latest
+    container_name: week9-attacker
+    hostname: kali-attacker
+    stdin_open: true
+    tty: true
+    networks:
+      week9-external:
+        ipv4_address: 172.90.10.2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      /bin/bash -c "
+      echo '======================================================' &&
+      echo ' Week 9 Attacker Ready (Metasploit included)' &&
+      echo ' Your IP: 172.90.10.2 (external network only)' &&
+      echo ' Pivot:   172.90.10.10 (ssh user: pivotuser / pivot123)' &&
+      echo ' Internal targets (reachable ONLY via pivot):' &&
+      echo '   172.90.20.20  week9-internal-web  (HTTP :80)' &&
+      echo '   172.90.20.21  week9-internal-db   (MySQL :3306)' &&
+      echo ' Enter: docker exec -it week9-attacker bash' &&
+      echo '======================================================' &&
+      tail -f /dev/null"
+
+  week9-pivot:
+    image: ubuntu:22.04
+    container_name: week9-pivot
+    hostname: pivot-host
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      week9-external:
+        ipv4_address: 172.90.10.10
+      week9-internal:
+        ipv4_address: 172.90.20.10
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q openssh-server iproute2 iptables net-tools &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      useradd -m -s /bin/bash pivotuser &&
+      echo 'pivotuser:pivot123' | chpasswd &&
+      sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config &&
+      echo 'PermitTunnel yes' >> /etc/ssh/sshd_config &&
+      echo 'GatewayPorts yes' >> /etc/ssh/sshd_config &&
+      echo 1 > /proc/sys/net/ipv4/ip_forward &&
+      echo 'Pivot host ready. Internal network: 172.90.20.0/24' &&
+      /usr/sbin/sshd -D"
+    restart: unless-stopped
+
+  week9-internal-web:
+    image: nginx:alpine
+    container_name: week9-internal-web
+    hostname: internal-web
+    networks:
+      week9-internal:
+        ipv4_address: 172.90.20.20
+    volumes:
+      - ./internal-web:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  week9-internal-db:
+    image: mysql:8.0
+    container_name: week9-internal-db
+    hostname: internal-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=internalR00t
+      - MYSQL_DATABASE=internaldb
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppass456
+    networks:
+      week9-internal:
+        ipv4_address: 172.90.20.21
+    restart: unless-stopped
+
+networks:
+  week9-external:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.90.10.0/24
+
+  week9-internal:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.90.20.0/24

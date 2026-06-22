@@ -15,20 +15,23 @@
 ### **Quick Setup**
 ```bash
 # Step 1: Get the lab files
-git clone https://github.com/michael-borck/password-lab.git
-cd password-lab
+git clone https://github.com/moktan456/ethical-hacking-docker-labs.git
+cd ethical-hacking-docker-labs/labs/week6
 
 # Step 2: Run the setup script
 chmod +x setup.sh
 ./setup.sh
 
-# Step 3: Start the lab environment
+# Step 3: Build the shared base image (only needed once, from the repo root)
+cd ../.. && make build-base && cd labs/week6
+
+# Step 4: Start the lab environment
 docker-compose up -d
 
-# Step 4: Enter the container
+# Step 5: Enter the container
 docker exec -it password-cracking-lab sh
 
-# Step 5: Check you're in the right place
+# Step 6: Check you're in the right place
 pwd
 # Should show: /
 ```

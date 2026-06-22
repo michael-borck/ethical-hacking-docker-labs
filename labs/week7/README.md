@@ -13,13 +13,13 @@ Before you begin, ensure you have the following installed on your system:
 1. Clone this repository:
 
    ```
-   git clone https://github.com/michaelborck-education/ethical-hacking-lab.git
+   git clone https://github.com/moktan456/ethical-hacking-docker-labs.git
    ```
 
-2. Navigate to the cloned repository:
+2. Navigate to the week 7 lab directory:
 
    ```
-   cd ethical-hacking-lab
+   cd ethical-hacking-docker-labs/labs/week7
    ```
 
 3. Start the Docker environment:
@@ -38,10 +38,10 @@ Before you begin, ensure you have the following installed on your system:
 
 | Service Name   | Description                                            | Access Method                                           |
 |----------------|--------------------------------------------------------|----------------------------------------------------------|
-| Wireshark      | Network protocol analyser                              | `http://localhost:3000`                                  |
-| Workstation    | Basic Alpine Linux workstation                         | `docker exec -it workstation sh`                         |
-| SecUtils       | Basic security utilities                               | `docker exec -it secutils sh`                            |
-| Netshoot       | Network troubleshooting container                      | `docker exec -it netshoot sh`                            |
+| Wireshark      | Network protocol analyser                              | `http://localhost:3000` (login: `abc`/`abc` by default)  |
+| Workstation    | Basic Alpine Linux workstation                         | `docker exec -it week7-workstation sh`                   |
+| SecUtils       | Basic security utilities                               | `docker exec -it week7-secutils sh`                      |
+| Netshoot       | Network troubleshooting container                      | `docker exec -it week7-netshoot sh`                      |
 | Ubuntu Desktop | Ubuntu LXDE desktop environment                        | VNC: `localhost:5900`<br>NoVNC (browser): `http://localhost:6080` |
 | OpenLDAP       | LDAP server                                            | `ldap://localhost:389`                                   |
 | MailHog        | Email testing tool                                     | `http://localhost:8025`                                  |
@@ -49,6 +49,7 @@ Before you begin, ensure you have the following installed on your system:
 | Telnet         | Telnet server                                          | `telnet localhost 23`                                    |
 | OWASP Juice Shop | Web application security training platform           | `http://localhost:3012`                                  |
 | DVWA           | Damn Vulnerable Web Application                        | `http://localhost:8085`                                  |
+| Attacker       | Kali-based attack box (ethical-base image)             | `docker exec -it week7-attacker bash`                    |
 
 ## Usage Guidelines
 

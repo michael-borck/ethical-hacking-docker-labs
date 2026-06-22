@@ -1,0 +1,92 @@
+version: '3.9'
+
+# Week 10: Exploit Development (Buffer Overflows)
+# Lab focus: stack buffer overflow analysis, GDB debugging, ret2win technique
+#
+# Full-chain flow: recon (nmap) → enumeration → exploit dev → privilege escalation
+
+services:
+
+  week10-attacker:
+    image: ethical-base
+    container_name: week10-attacker
+    hostname: kali-attacker
+    stdin_open: true
+    tty: true
+    user: root
+    networks:
+      week10-exploitnet:
+        ipv4_address: 172.100.0.2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./target-files:/root/tools:ro
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q gdb python3-pwntools gcc libc6-dev python3-pip &&
+      pip3 install --break-system-packages pwntools 2>/dev/null | tail -1 &&
+      echo '======================================================' &&
+      echo ' Week 10 Attacker Ready' &&
+      echo ' Tools: gdb, pwntools, gcc' &&
+      echo ' Exploit template: /root/tools/exploit_template.py' &&
+      echo ' Targets:' &&
+      echo '   172.100.0.10  week10-web-recon (HTTP :80)' &&
+      echo '   172.100.0.11  week10-vuln-target (vuln service :9999, SSH :22)' &&
+      echo ' Enter: docker exec -it week10-attacker bash' &&
+      echo '======================================================' &&
+      tail -f /dev/null"
+
+  week10-web-recon:
+    image: nginx:alpine
+    container_name: week10-web-recon
+    hostname: recon-web
+    networks:
+      week10-exploitnet:
+        ipv4_address: 172.100.0.10
+    volumes:
+      - ./recon-web:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  week10-vuln-target:
+    image: ubuntu:22.04
+    container_name: week10-vuln-target
+    hostname: vuln-target
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      week10-exploitnet:
+        ipv4_address: 172.100.0.11
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./target-files:/opt/target:ro
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q gcc openssh-server &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      useradd -m -s /bin/bash lowpriv &&
+      echo 'lowpriv:lowpriv123' | chpasswd &&
+      sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      /usr/sbin/sshd &&
+      cp /opt/target/vuln.c /tmp/vuln.c &&
+      gcc -o /opt/vuln /tmp/vuln.c -fno-stack-protector -z execstack -no-pie &&
+      echo 'Vulnerable service compiled. Starting...' &&
+      /opt/vuln"
+    restart: unless-stopped
+
+networks:
+  week10-exploitnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.100.0.0/24

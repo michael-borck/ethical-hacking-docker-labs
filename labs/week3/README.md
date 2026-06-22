@@ -11,7 +11,7 @@ This lab focuses on analyzing captured network traffic using Wireshark to inform
 ## Setup (2 min)
 1. Ensure base built: `make build-base` (from root).
 2. Start lab: From root, `cd labs/week3 && docker compose up -d`
-3. Access Wireshark: http://localhost:3000 (default creds: admin/admin or configure in env).
+3. Access Wireshark: http://localhost:3000 (default creds: **abc/abc** — the linuxserver/wireshark image's actual default; override with the `PASSWORD` env var in `docker-compose.yaml` if you want something else).
 4. Sample target runs on 172.30.0.3 for live capture practice.
 
 ## Activities
@@ -21,9 +21,18 @@ This lab focuses on analyzing captured network traffic using Wireshark to inform
    - Note: Hosts, ports, data volumes. Look for sensitive info (e.g., creds in cleartext).
 
 2. **Live Capture (20 min)**:
-   - Use Wireshark interface to capture from sample-target.
-   - Run commands on target: `docker exec -it week3-target nmap -sV 172.30.0.2`.
-   - Analyze: Identify enumeration patterns.
+   - Start a capture on Wireshark's own interface (the only traffic it can reliably see is traffic
+     to/from its own container — see note below).
+   - From a second terminal, generate traffic aimed *at* the Wireshark container so it shows up:
+     `docker exec -it week3-target nmap -sV 172.30.0.2`.
+   - Analyze: Identify enumeration patterns in the resulting capture.
+
+   > **Why aimed at .2, not a scan of `sample-target` itself:** on a standard Docker bridge network,
+   > a container only sees traffic addressed to/from itself — it can't passively sniff arbitrary
+   > traffic between two *other* containers the way a hub or mirrored switch port would. If you want
+   > students to observe traffic between two unrelated services, route it through a proxy that shares
+   > Wireshark's network namespace (see Week 1's HAProxy setup) rather than relying on this network
+   > to "see everything."
 
 3. **Proposal Draft (40 min)**:
    - Based on findings, write a scope doc (use template in root/docs if exists):

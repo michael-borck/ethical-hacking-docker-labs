@@ -1,0 +1,109 @@
+version: '3.9'
+
+# Week 5: System and Network Enumeration
+# Lab focus: LDAP, MySQL, SMB enumeration using enum4linux, ldapsearch, nmap scripts
+
+services:
+
+  week5-attacker:
+    image: ethical-base
+    container_name: week5-attacker
+    hostname: kali-attacker
+    stdin_open: true
+    tty: true
+    user: root
+    networks:
+      week5-enumnet:
+        ipv4_address: 172.50.0.2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q enum4linux ldap-utils smbclient default-mysql-client netcat-traditional &&
+      echo '======================================================' &&
+      echo ' Week 5 Attacker Ready' &&
+      echo ' Targets on 172.50.0.0/24:' &&
+      echo '   172.50.0.10  week5-ldap  (LDAP :389)' &&
+      echo '   172.50.0.11  week5-mysql (MySQL :3306)' &&
+      echo '   172.50.0.12  week5-smb   (SMB :445)' &&
+      echo ' Enter: docker exec -it week5-attacker bash' &&
+      echo '======================================================' &&
+      tail -f /dev/null"
+
+  week5-ldap:
+    image: osixia/openldap:1.5.0
+    container_name: week5-ldap
+    hostname: ldap-server
+    environment:
+      - LDAP_ORGANISATION=CyberCorp
+      - LDAP_DOMAIN=cybercorp.local
+      - LDAP_ADMIN_PASSWORD=admin123
+      - LDAP_CONFIG_PASSWORD=config123
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=readonly
+      - LDAP_READONLY_USER_PASSWORD=readonly123
+    networks:
+      week5-enumnet:
+        ipv4_address: 172.50.0.10
+    restart: unless-stopped
+
+  week5-mysql:
+    image: mysql:8.0
+    container_name: week5-mysql
+    hostname: mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=corpdb
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbpass123
+    networks:
+      week5-enumnet:
+        ipv4_address: 172.50.0.11
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+
+  week5-smb:
+    image: ubuntu:22.04
+    container_name: week5-smb
+    hostname: smb-server
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      week5-enumnet:
+        ipv4_address: 172.50.0.12
+    command: >
+      /bin/bash -c "
+      apt-get update -qq &&
+      apt-get install -y -q samba &&
+      useradd -m -s /bin/bash alice &&
+      echo 'alice:alice123' | chpasswd &&
+      (echo alice123; echo alice123) | smbpasswd -a -s alice &&
+      useradd -m -s /bin/bash bob &&
+      echo 'bob:bob456' | chpasswd &&
+      (echo bob456; echo bob456) | smbpasswd -a -s bob &&
+      mkdir -p /srv/samba/public /srv/samba/private &&
+      echo 'CyberCorp public share.' > /srv/samba/public/notice.txt &&
+      echo 'Internal documents - confidential.' > /srv/samba/private/readme.txt &&
+      printf '[global]\n  workgroup = CYBERCORP\n  server string = CyberCorp File Server\n  netbios name = SMB-SERVER\n  security = user\n  map to guest = bad user\n  dns proxy = no\n\n[public]\n  path = /srv/samba/public\n  browsable = yes\n  guest ok = yes\n  read only = yes\n\n[private]\n  path = /srv/samba/private\n  browsable = no\n  guest ok = no\n  valid users = alice\n  read only = yes\n' > /etc/samba/smb.conf &&
+      smbd --foreground --no-process-group"
+    restart: unless-stopped
+
+  week5-netshoot:
+    image: nicolaka/netshoot
+    container_name: week5-netshoot
+    hostname: netshoot
+    networks:
+      week5-enumnet:
+        ipv4_address: 172.50.0.20
+    command: tail -f /dev/null
+    restart: unless-stopped
+
+networks:
+  week5-enumnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.50.0.0/24

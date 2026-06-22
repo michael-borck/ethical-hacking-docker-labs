@@ -70,9 +70,14 @@ sunshine
 princess
 EOF
 
-# Download rockyou wordlist (small version for lab)
-echo "Downloading small rockyou wordlist..."
-wget -q -O wordlists/rockyou-small.txt https://raw.githubusercontent.com/zacheller/rockyou/master/rockyou-top1000.txt 2>/dev/null || echo "Note: Could not download rockyou sample. Using local wordlists only."
+# Download a larger wordlist for the lab (10,000 common passwords)
+echo "Downloading extended wordlist..."
+if wget -q -O wordlists/rockyou-small.txt https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10k-most-common.txt && [ -s wordlists/rockyou-small.txt ]; then
+    echo "Extended wordlist downloaded ($(wc -l < wordlists/rockyou-small.txt) entries)."
+else
+    echo "Note: Could not download extended wordlist (no internet access?). Using local wordlists only."
+    rm -f wordlists/rockyou-small.txt
+fi
 
 # Create helper scripts
 cat > scripts/hash-identifier.py << 'EOF'

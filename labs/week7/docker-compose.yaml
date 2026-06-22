@@ -1,7 +1,7 @@
 services:
   wireshark:
     image: lscr.io/linuxserver/wireshark:latest
-    container_name: wireshark
+    container_name: week7-wireshark
     environment:
       - PUID=1000
       - PGID=1000
@@ -20,7 +20,7 @@ services:
 
   ubuntu-desktop:
     image: dorowu/ubuntu-desktop-lxde-vnc
-    container_name: ubuntu-desktop
+    container_name: week7-ubuntu-desktop
     environment:
       - USER=root
       - PASSWORD=root
@@ -36,7 +36,7 @@ services:
 
   secutils:
     image: michaelborck/secutils
-    container_name: secutils
+    container_name: week7-secutils
     ports:
       - "6081:80"
     environment:
@@ -54,7 +54,8 @@ services:
     stdin_open: true
     tty: true
     networks:
-      security_net
+      security_net:
+        ipv4_address: 172.20.0.13
     cap_add:
       - NET_ADMIN
     security_opt:
@@ -62,7 +63,7 @@ services:
 
   workstation:
     image: alpine:latest
-    container_name: workstation
+    container_name: week7-workstation
     command: /bin/sh -c "while true; do sleep 3600; done"
     networks:
       security_net:
@@ -70,7 +71,7 @@ services:
 
   netshoot:
     image: nicolaka/netshoot
-    container_name: netshoot
+    container_name: week7-netshoot
     command: tail -f /dev/null # Keeps the container running
     networks:
       security_net:
@@ -82,7 +83,7 @@ services:
 
   ldap:
     image: osixia/openldap
-    container_name: ldap
+    container_name: week7-ldap
     environment:
       LDAP_ORGANISATION: "Example Organization"
       LDAP_DOMAIN: "example.org"
@@ -95,7 +96,7 @@ services:
 
   mail:
     image: mailhog/mailhog
-    container_name: mail
+    container_name: week7-mail
     ports:
       - "8025:8025"
       - "1025:1025"
@@ -105,7 +106,7 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: mysql
+    container_name: week7-mysql
     environment:
       MYSQL_ROOT_PASSWORD: "rootpassword"
       MYSQL_DATABASE: "exampledb"
@@ -119,7 +120,7 @@ services:
 
   telnet:
     image: alpine:latest
-    container_name: telnet
+    container_name: week7-telnet
     command: sh -c "apk add --no-cache busybox-extras && /usr/sbin/telnetd -F"
     ports:
       - "23:23"
@@ -129,7 +130,7 @@ services:
 
   juice-shop:
     image: bkimminich/juice-shop
-    container_name: juice-shop
+    container_name: week7-juice-shop
     ports:
       - 3012:3000
     networks:
@@ -138,7 +139,7 @@ services:
 
   dvwa:
     image: vulnerables/web-dvwa
-    container_name: dvwa
+    container_name: week7-dvwa
     ports:
       - "8085:80"
     networks:

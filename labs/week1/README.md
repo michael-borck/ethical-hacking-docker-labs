@@ -13,11 +13,11 @@ This repository contains a `docker-compose.yaml` file that sets up a Network Sec
 1. Install [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
 2. Clone this repository:
 ```
-git clone https://github.com/yourusername/network-security-toolkit.git
+git clone https://github.com/moktan456/ethical-hacking-docker-labs.git
 ```
-3. Change to the cloned directory:
+3. Change to the week 1 lab directory:
 ```
-cd network-security-toolkit
+cd ethical-hacking-docker-labs/labs/week1
 ```
 4. Create and start the services with Docker Compose:
 ```
@@ -32,11 +32,17 @@ docker-compose up -d
 - **Port**: 14500
 - **Configuration file**: `./haproxy.cfg`
 
+> **Note:** `haproxy.cfg` ships with every frontend/listen block commented out — this is intentional,
+> not broken. Wireshark's web UI works on port 14500 without HAProxy doing anything, because the
+> Wireshark container shares this proxy container's network namespace. HAProxy here is only needed
+> if you want it to relay another protocol (HTTP, SMB, NFS, etc.) through itself so Wireshark can
+> observe that traffic — uncomment and configure the relevant block in `haproxy.cfg` for that.
+
 ### Wireshark
 
-- **IP address**: 192.168.1.3
+- **Network**: shares the `proxy` container's network namespace (`network_mode: "service:proxy"`), so it has no IP address of its own — it's reachable via the proxy container.
 - **Access password**: "wireshark"
-- **Captured files**: Stored in the local `./caps` directory
+- **Captured files**: Stored in the local `./data` directory
 
 ### Security Utilities
 
