@@ -1,7 +1,7 @@
 services:
   # Main hacking tools container
   hacking-tools:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: password-cracking-lab
     hostname: hacklab
     stdin_open: true

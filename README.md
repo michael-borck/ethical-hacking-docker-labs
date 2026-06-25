@@ -25,19 +25,28 @@ This repository organizes Docker labs for a 12-week ethical hacking course. Each
 
 ## Shared Base Image
 
-All labs use a shared `ethical-base` image built from `base.Dockerfile` (Kali with core tools like nmap, hydra, john, etc.). This reduces duplication.
+All labs share a base Kali image, `ghcr.io/michael-borck/ethical-base`, built from [`base.Dockerfile`](base.Dockerfile) with core tools (nmap, hydra, john, hashcat, wireshark, sqlmap, gobuster, …). A GitHub Actions workflow ([`.github/workflows/build-base.yml`](.github/workflows/build-base.yml)) builds and publishes it to GHCR on every change, so labs just pull it.
+
+- **Default (online)**: `docker compose up -d` pulls the prebuilt image — no local build step.
+- **Fallback (offline, or to customise the tools)**: `make build-base` builds `base.Dockerfile` locally and tags it with the same name, so `docker compose up` uses your local copy automatically.
+
+> After the first workflow run, set the package to **Public** at `github.com/users/michael-borck/packages/container/ethical-base/settings` so students can pull without authenticating.
 
 ## Usage
 
-1. **Build base**: `make build-base`
+1. **Clone & enter a week**:
+   ```bash
+   git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
+   cd ethical-hacking-docker-labs/labs/week6
+   ```
 
-2. **Run a week**: `make run-weekN` (e.g., `make run-week6`)
+2. **Start the lab**: `docker compose up -d` — the base image and all target services pull automatically. (First run takes a few minutes to pull.)
 
-3. **Stop all**: `make stop-all`
+3. **Enter the attacker shell**: `docker exec -it <container> bash` — each week's README names its attacker container (e.g. `password-cracking-lab`).
 
-4. **Clean**: `make clean-all`
+4. **Stop / clean up**: from the week folder, `docker compose down`; or `make stop-all` from the repo root.
 
-5. **Check availability**: `make status` lists every week and whether it's ready.
+Repo-root convenience targets: `make run-weekN` (start week *N*), `make status` (list all weeks), `make pull-base` (refresh the base image), `make build-base` (build the base locally).
 
 ### Lab Status
 All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `STUDENT-WORKSHEET.md`, and any seed files its services need.
@@ -48,7 +57,14 @@ All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3�
 - `Makefile`: Orchestration.
 
 ## Setup
-Git clone if needed. Run in isolated environment.
+Quickstart:
+```bash
+git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
+cd ethical-hacking-docker-labs/labs/week6
+docker compose up -d        # pulls the base image + targets
+docker exec -it password-cracking-lab bash
+```
+Run in an isolated environment. You only need Docker installed — no local build step.
 
 **Note**: Educational only. Follow ethics; no real-world testing without permission.
 

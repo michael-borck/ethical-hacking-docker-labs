@@ -49,12 +49,12 @@ services:
         ipv4_address: 172.20.0.4
 
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week7-attacker
     stdin_open: true
     tty: true
     networks:
-      security_net
+      - security_net
     cap_add:
       - NET_ADMIN
     security_opt:

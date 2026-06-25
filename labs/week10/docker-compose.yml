@@ -40,7 +40,7 @@ services:
   # Runs as root so apt-get / pip work inside the inline command.
   # ─────────────────────────────────────────────────────────────────────────
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week10-attacker
     hostname: attacker
     user: root

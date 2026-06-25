@@ -1,8 +1,17 @@
-.PHONY: build-base build-all run-week1 run-week2 run-week3 run-week4 run-week5 run-week6 run-week7 run-week8 run-week9 run-week10 run-week11 run-week12 stop-all clean-all down-all status
+.PHONY: build-base pull-base build-all run-week1 run-week2 run-week3 run-week4 run-week5 run-week6 run-week7 run-week8 run-week9 run-week10 run-week11 run-week12 stop-all clean-all down-all status
 
-# Build the shared base image (required once before any hands-on lab)
+# The attacker image every lab pulls. By default it is the prebuilt image on GHCR,
+# so `docker compose up -d` just pulls it — no local build step needed. To build
+# it locally instead (offline, or to customise the tools), run `make build-base`.
+BASE_IMAGE ?= ghcr.io/michael-borck/ethical-base:latest
+
+# Build the shared base image locally, tagged as BASE_IMAGE so compose picks it up
 build-base:
-	docker build -f base.Dockerfile -t ethical-base .
+	docker build -f base.Dockerfile -t $(BASE_IMAGE) .
+
+# Pull the latest prebuilt base image from GHCR
+pull-base:
+	docker pull $(BASE_IMAGE)
 
 # Shared recipe: start a week's compose if present, otherwise print a clear message.
 # Looks for either docker-compose.yml or docker-compose.yaml so it works for every week.

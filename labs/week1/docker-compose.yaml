@@ -41,7 +41,7 @@ services:
         ipv4_address: 192.168.1.5
 
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week1-attacker
     stdin_open: true
     tty: true

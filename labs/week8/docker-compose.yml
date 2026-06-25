@@ -1,7 +1,7 @@
 services:
   # Attacker Machine (Kali Linux)
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: de-ice-attacker
     hostname: kali-attacker
     tty: true

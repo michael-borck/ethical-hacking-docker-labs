@@ -25,7 +25,7 @@ services:
   # tooling (ldap-utils, smbclient, snmp, default-mysql-client, enum4linux).
   # nmap/hydra/john/etc. already ship in ethical-base.
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week5-attacker
     hostname: attacker
     user: root

@@ -4,7 +4,7 @@ services:
   # bastion but has NO direct route to the internal 172.24.0.0/24 hosts.
   # ------------------------------------------------------------------
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week9-attacker
     hostname: attacker
     stdin_open: true

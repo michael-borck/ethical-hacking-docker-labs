@@ -18,7 +18,7 @@ services:
 
   # Attacker workstation (shared Kali base image).
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week11-attacker
     hostname: attacker
     stdin_open: true

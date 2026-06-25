@@ -55,7 +55,7 @@ services:
 
   # ---- Attacker: Kali base for crafting payloads + analysing delivered mail -
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week12-attacker
     hostname: attacker
     stdin_open: true

@@ -1,7 +1,7 @@
 services:
   # Attacker Machine (Kali Linux with nmap + tools)
   attacker:
-    image: ethical-base
+    image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week4-attacker
     hostname: attacker
     stdin_open: true
