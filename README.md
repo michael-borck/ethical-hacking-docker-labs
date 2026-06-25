@@ -17,7 +17,7 @@ This repository organizes Docker labs for a 12-week ethical hacking course. Each
 | 5 | System and network enumeration | Enumeration | LDAP, MySQL, SMB, SNMP, Netshoot |
 | 6 | Password cracking | Cracking techniques | John, Hydra, SSH target |
 | 7 | Web app vulnerabilities | SQLi, XSS | DVWA, Juice Shop |
-| 8 | Privilege escalation | Escalation vectors | DeICE sim, SUID vulns |
+| 8 | Privilege escalation | Escalation vectors | De-ICE S1.100 sim (web, SSH, FTP, mail) |
 | 9 | Lateral movement | Pivoting | SSH/SOCKS tunnels, dual-network sim |
 | 10 | Exploit development | Buffer overflows | GDB, vulnerable bins |
 | 11 | Bypassing physical access | Physical security | Access-control logic sim (RFID analog) |
@@ -52,9 +52,12 @@ Repo-root convenience targets: `make run-weekN` (start week *N*), `make status` 
 All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `STUDENT-WORKSHEET.md`, and any seed files its services need.
 
 ## Structure
-- `base.Dockerfile`: Shared Kali base.
-- `labs/weekN/`: Per-week setups.
-- `Makefile`: Orchestration.
+- `base.Dockerfile`: Shared Kali base image source.
+- `.github/workflows/build-base.yml`: CI that builds and publishes the base image to GHCR.
+- `labs/weekN/`: Per-week setups (compose, README, worksheet, seed files).
+- `data/`: Shared resources (e.g. packet captures for the traffic-analysis lab).
+- `Makefile`: Orchestration (build/pull base, run/stop weeks, status).
+- `.gitignore`, `LICENSE`: Housekeeping.
 
 ## Setup
 Quickstart:
