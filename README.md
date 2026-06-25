@@ -14,14 +14,14 @@ This repository organizes Docker labs for a 12-week ethical hacking course. Each
 | 2 | Ethical and legal issues | Readings and discussions | N/A (docs only) |
 | 3 | Scope and proposal development | Traffic analysis | Wireshark + sample captures |
 | 4 | Reporting and engagement close out | Scanning targets | Nmap on targets |
-| 5 | System and network enumeration | Enumeration | LDAP, MySQL, Netshoot |
+| 5 | System and network enumeration | Enumeration | LDAP, MySQL, SMB, SNMP, Netshoot |
 | 6 | Password cracking | Cracking techniques | John, Hydra, SSH target |
 | 7 | Web app vulnerabilities | SQLi, XSS | DVWA, Juice Shop |
 | 8 | Privilege escalation | Escalation vectors | DeICE sim, SUID vulns |
-| 9 | Lateral movement | Pivoting | Metasploit, Windows network sim |
+| 9 | Lateral movement | Pivoting | SSH/SOCKS tunnels, dual-network sim |
 | 10 | Exploit development | Buffer overflows | GDB, vulnerable bins |
-| 11 | Bypassing physical access | Physical security | RFID sim (future) |
-| 12 | Social engineering | Phishing mitigation | Phishing kits, awareness |
+| 11 | Bypassing physical access | Physical security | Access-control logic sim (RFID analog) |
+| 12 | Social engineering | Phishing mitigation | GoPhish, MailHog, awareness |
 
 ## Shared Base Image
 
@@ -37,10 +37,10 @@ All labs use a shared `ethical-base` image built from `base.Dockerfile` (Kali wi
 
 4. **Clean**: `make clean-all`
 
-### For Missing Weeks
-Some weeks (2,3,4,5,9-12) need custom content. Examples:
-- Week2: Add README with ethics readings.
-- Week3: Copy wireshark compose from week1.
+5. **Check availability**: `make status` lists every week and whether it's ready.
+
+### Lab Status
+All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `STUDENT-WORKSHEET.md`, and any seed files its services need.
 
 ## Structure
 - `base.Dockerfile`: Shared Kali base.

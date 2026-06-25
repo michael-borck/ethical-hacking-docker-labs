@@ -1,0 +1,43 @@
+services:
+  # Access-control backend: simulated building badge reader (Python stdlib).
+  access-control:
+    image: python:3.12-slim
+    container_name: week11-access
+    hostname: reader
+    ports:
+      - "11180:80"
+    volumes:
+      - ./access-control/app.py:/app/app.py:ro
+      - ./valid_badges.txt:/app/valid_badges.txt:ro
+    working_dir: /app
+    command: ["python3", "/app/app.py"]
+    networks:
+      phys_net:
+        ipv4_address: 172.26.0.10
+    restart: unless-stopped
+
+  # Attacker workstation (shared Kali base image).
+  attacker:
+    image: ethical-base
+    container_name: week11-attacker
+    hostname: attacker
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    command: >
+      /bin/bash -c "
+      echo 'Week 11 attacker ready. Run: docker exec -it week11-attacker bash' &&
+      tail -f /dev/null"
+    networks:
+      phys_net:
+        ipv4_address: 172.26.0.2
+
+networks:
+  phys_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.26.0.0/24

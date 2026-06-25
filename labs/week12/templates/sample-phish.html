@@ -1,0 +1,100 @@
+<!--
+  ============================================================================
+  *** SIMULATION / TRAINING USE ONLY - NOT A REAL MESSAGE ***
+  GoPhish EMAIL TEMPLATE: fake "ACME IT password expiry" notice.
+
+  How to import in GoPhish:
+    Email Templates -> New Template -> Import Email
+    then paste this entire file into the box and click "Import Template".
+
+  Deliberate phishing indicators are baked in below (HTML comments mark each).
+  Students hunt for them later from the DEFENDER side in MailHog's Source view
+  and in the STUDENT-WORKSHEET.md "Defender view" checklist.
+
+  GoPhish template variables used:
+    {{.FirstName}} - recipient first name (from Users & Groups)
+    {{.URL}}       - the phishing link -> expands to the campaign URL + rid
+    {{.Tracker}}   - 1x1 transparent tracking pixel (open beacon)
+  ============================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- GoPhish pulls the email Subject from the first <title>: -->
+  <title>Action Required: Password Expires in 24 Hours</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:Segoe UI,Arial,sans-serif;color:#222;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);">
+
+          <!-- Spoofed branding bar (display name "ACME IT Service Desk") -->
+          <tr>
+            <td style="background:#0b3d91;padding:18px 28px;color:#ffffff;">
+              <span style="font-size:20px;font-weight:700;letter-spacing:.5px;">ACME&nbsp;IT&nbsp;Service&nbsp;Desk</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px;">
+              <!-- Indicator: mail-merged greeting (real phishers use breached PII
+                   to personalise, so personalisation is NOT a trust signal). -->
+              <p style="margin:0 0 14px;font-size:15px;">Dear&nbsp;{{.FirstName}},</p>
+
+              <!-- Indicator: URGENCY + FEAR ("within 24 hours", "suspended"). -->
+              <p style="margin:0 0 14px;font-size:15px;line-height:1.5;">
+                Our security system flagged that your corporate account password
+                is <strong>due to expire within 24 hours</strong>. To avoid having
+                your email, files, and VPN access <strong>suspended</strong>,
+                please verify your credentials now.
+              </p>
+
+              <!-- Indicator: the button LINK TEXT ("secure.acme.com/verify")
+                   does NOT match its href. {{.URL}} expands to the campaign URL
+                   (a bare internal IP), not the real acme.com domain. -->
+              <p style="margin:0 0 18px;font-size:15px;">
+                <a href="{{.URL}}"
+                   style="background:#e8431a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:4px;font-weight:600;display:inline-block;">
+                  Verify your password now
+                </a>
+              </p>
+              <p style="margin:0 0 8px;font-size:12px;color:#666;word-break:break-all;">
+                If the button does not work, open this address:
+                <a href="{{.URL}}" style="color:#0b3d91;">secure.acme.com/verify</a>
+              </p>
+
+              <!-- Indicator: typo ("Verifcation") - real corporate comms are
+                   proof-read; phishers often are not. -->
+              <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:#444;">
+                Thank you for helping keep Acme secure. Verifcation is required
+                for all staff per the IT acceptable-use policy (rev. 2024-Q2).
+              </p>
+            </td>
+          </tr>
+
+          <!-- Indicator: lookalike footer / inconsistent copyright / fake policy ref -->
+          <tr>
+            <td style="padding:18px 28px;border-top:1px solid #eaeef3;background:#fafbfc;">
+              <p style="margin:0;font-size:11px;color:#8a94a6;">
+                ACME Corporation &middot; IT Service Desk<br>
+                &copy; 2025 AcmeCorp Security Operations. All rights reserved.<br>
+                <span style="color:#b00020;">This is an automated message - please do not reply.</span>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Indicator: TRACKING PIXEL (open beacon). {{.Tracker}} is replaced by
+       GoPhish with a transparent 1x1 image. When the victim opens the message
+       with images enabled, it pings the phish server and registers an "open"
+       in the Campaign results. -->
+  {{.Tracker}}
+</body>
+</html>

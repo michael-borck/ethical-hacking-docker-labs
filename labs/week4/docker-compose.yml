@@ -1,0 +1,100 @@
+services:
+  # Attacker Machine (Kali Linux with nmap + tools)
+  attacker:
+    image: ethical-base
+    container_name: week4-attacker
+    hostname: attacker
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    command: >
+      /bin/bash -c "
+      echo 'Week 4 attacker ready. Run: docker exec -it week4-attacker bash' &&
+      tail -f /dev/null"
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.5
+
+  # Web target — Apache httpd serving a custom banner page
+  web:
+    image: httpd:2.4
+    container_name: week4-web
+    hostname: web
+    ports:
+      - "14080:80"
+    volumes:
+      - ./web-content:/usr/local/apache2/htdocs:ro
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.10
+
+  # SSH target — weak guest account for fingerprinting (mirror week6/week8 idiom)
+  ssh-target:
+    image: ubuntu:22.04
+    container_name: week4-ssh-target
+    hostname: ssh-target
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      apt-get update &&
+      apt-get install -y openssh-server &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      useradd -m -s /bin/bash guest &&
+      echo 'guest:guest123' | chpasswd &&
+      sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      service ssh start &&
+      echo 'SSH target ready (weak guest account)' &&
+      tail -f /dev/null"
+    ports:
+      - "14022:22"
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.11
+
+  # MySQL target — discoverable service fingerprint
+  mysql-target:
+    image: mysql:8
+    container_name: week4-mysql-target
+    hostname: mysql-target
+    environment:
+      - MYSQL_ROOT_PASSWORD=sc@nlab
+      - MYSQL_DATABASE=scandb
+    ports:
+      - "13306:3306"
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.12
+
+  # Redis target — discoverable service fingerprint
+  redis-target:
+    image: redis:7
+    container_name: week4-redis-target
+    hostname: redis-target
+    command: ["redis-server"]
+    ports:
+      - "16379:6379"
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.13
+
+  # Silent host — answers ICMP but exposes NO services; teaches host-discovery nuance
+  silent-host:
+    image: alpine:latest
+    container_name: week4-silent-host
+    hostname: silent-host
+    command: tail -f /dev/null
+    networks:
+      scan_net:
+        ipv4_address: 172.21.0.14
+
+networks:
+  scan_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24

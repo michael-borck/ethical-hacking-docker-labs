@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>INTERNAL CORP PORTAL</title>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #0b2545; color: #e7eef7; }
+        header { background: #06183a; padding: 28px 40px; border-bottom: 3px solid #2a72de; }
+        h1 { margin: 0; font-size: 26px; letter-spacing: 1px; }
+        .tag { color: #6fa8ff; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .wrap { max-width: 820px; margin: 30px auto; padding: 0 20px; }
+        .panel { background: #102a52; border: 1px solid #23406f; border-radius: 8px; padding: 22px 26px; margin-bottom: 18px; }
+        .warn { background: #3a1206; border: 1px solid #7a2a12; color: #ffd2c4; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #23406f; }
+        th { background: #1b3a6b; color: #bcd6ff; }
+        code { background: #06183a; padding: 2px 6px; border-radius: 3px; color: #8be9a2; }
+        footer { color: #6f86ad; font-size: 11px; text-align: center; margin: 24px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="tag">Acme Corp &mdash; Intranet</div>
+        <h1>INTERNAL CORP PORTAL</h1>
+    </header>
+
+    <div class="wrap">
+        <div class="panel warn">
+            <strong>Restricted area.</strong> This portal is reachable only from inside the
+            corporate network. If you can read this page from <em>outside</em>, a routing or
+            pivoting path has been opened to the internal segment.
+        </div>
+
+        <div class="panel">
+            <h2 style="margin-top:0;">Department Directory</h2>
+            <table>
+                <tr><th>Name</th><th>Department</th><th>Internal Contact</th></tr>
+                <tr><td>Alice Adams</td><td>Executive</td><td>x1001</td></tr>
+                <tr><td>Bob Banter</td><td>IT Operations</td><td>x1002</td></tr>
+                <tr><td>Carol Coffee</td><td>Finance</td><td>x1003</td></tr>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2 style="margin-top:0;">Internal Services</h2>
+            <ul>
+                <li>This portal &mdash; <code>http://internal-web</code> (172.24.0.4)</li>
+                <li>Corporate database &mdash; <code>internal-db</code> (172.24.0.5), MySQL 8</li>
+                <li>Flag / health endpoint &mdash; <code>internal-flag</code> (172.24.0.6), port 8080</li>
+            </ul>
+        </div>
+
+        <footer>Acme Corp Intranet &middot; internal segment 172.24.0.0/24 &middot; not for external access</footer>
+    </div>
+</body>
+</html>

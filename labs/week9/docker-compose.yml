@@ -1,0 +1,120 @@
+services:
+  # ------------------------------------------------------------------
+  # Attacker (Kali) — on the EXTERNAL segment only. It can reach the
+  # bastion but has NO direct route to the internal 172.24.0.0/24 hosts.
+  # ------------------------------------------------------------------
+  attacker:
+    image: ethical-base
+    container_name: week9-attacker
+    hostname: attacker
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      apt-get update &&
+      apt-get install -y --no-install-recommends sshpass proxychains default-mysql-client &&
+      sed -i '/^socks/d' /etc/proxychains.conf &&
+      printf '\nsocks5 127.0.0.1 1080\n' >> /etc/proxychains.conf &&
+      echo 'Week 9 attacker ready. Run: docker exec -it week9-attacker bash' &&
+      tail -f /dev/null"
+    networks:
+      external_net:
+        ipv4_address: 172.23.0.2
+
+  # ------------------------------------------------------------------
+  # pivot-host / bastion — the beachhead. Lives on BOTH segments so it
+  # can relay traffic from the attacker into the internal network.
+  # ------------------------------------------------------------------
+  pivot-host:
+    image: ubuntu:22.04
+    container_name: week9-pivot
+    hostname: bastion
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    ports:
+      - "23022:22"
+    command: >
+      /bin/bash -c "
+      apt-get update &&
+      apt-get install -y --no-install-recommends openssh-server &&
+      mkdir -p /var/run/sshd &&
+      ssh-keygen -A &&
+      useradd -m -s /bin/bash jump &&
+      echo 'jump:jump3r!' | chpasswd &&
+      sed -i 's/#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config &&
+      echo 'PermitTunnel yes' >> /etc/ssh/sshd_config &&
+      echo 'GatewayPorts no' >> /etc/ssh/sshd_config &&
+      echo 'PermitRootLogin no' >> /etc/ssh/sshd_config &&
+      /usr/sbin/sshd &&
+      echo 'Pivot host (bastion) ready on 172.23.0.3 + 172.24.0.3' &&
+      tail -f /dev/null"
+    networks:
+      external_net:
+        ipv4_address: 172.23.0.3
+      corp_internal:
+        ipv4_address: 172.24.0.3
+
+  # ------------------------------------------------------------------
+  # internal-web — Apache serving the INTERNAL CORP PORTAL.
+  # Internal segment only; NOT exposed to the host.
+  # ------------------------------------------------------------------
+  internal-web:
+    image: httpd:2.4
+    container_name: week9-web
+    hostname: internal-web
+    volumes:
+      - ./web-content:/usr/local/apache2/htdocs:ro
+    networks:
+      corp_internal:
+        ipv4_address: 172.24.0.4
+
+  # ------------------------------------------------------------------
+  # internal-db — corporate MySQL 8 database. Root password 'int3rnal'.
+  # Seeded with a bonus secret. Internal segment only.
+  # ------------------------------------------------------------------
+  internal-db:
+    image: mysql:8
+    container_name: week9-db
+    hostname: internal-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=int3rnal
+      - MYSQL_DATABASE=corpdb
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      corp_internal:
+        ipv4_address: 172.24.0.5
+
+  # ------------------------------------------------------------------
+  # internal-flag — netcat flag service. Replies with the lab flag to
+  # any client that connects on :8080. Internal segment only.
+  # ------------------------------------------------------------------
+  internal-flag:
+    image: alpine:latest
+    container_name: week9-flag
+    hostname: internal-flag
+    command: >
+      /bin/sh -c "
+      while true; do printf 'HTTP/1.0 200 OK\r\n\r\nFLAG{lateral_movement_success}\n' | nc -l -p 8080; done"
+    networks:
+      corp_internal:
+        ipv4_address: 172.24.0.6
+
+networks:
+  external_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
+  corp_internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/24

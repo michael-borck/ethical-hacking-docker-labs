@@ -1,0 +1,83 @@
+# =============================================================================
+# Week 12 - Social Engineering: Phishing Mitigation (INTERNAL-ONLY simulation)
+# =============================================================================
+#
+#   *** INTERNAL LAB NETWORK ONLY - DO NOT EXPOSE TO THE INTERNET ***
+#
+#   This stack runs a SAFELY CONTAINED phishing simulation (GoPhish + MailHog).
+#   Every message GoPhish "sends" is delivered to the MailHog catch-all inbox
+#   on the SAME isolated bridge network. No email ever leaves the Docker host,
+#   no real mailbox is ever contacted, and no real credentials are collected.
+#
+#   *** This network MUST NEVER be connected to the internet or to a real ***
+#   *** mail server. Using these tools against real people, real inboxes,  ***
+#   *** or real organisations without explicit written authorization is    ***
+#   *** ILLEGAL.                                                          ***
+#
+# Network:  phish_net 172.27.0.0/24  (contract sec 6 - do not change)
+# Host ports (contract sec 6):
+#   gophish admin 13333:3333   (admin UI, TLS self-signed)
+#   mailhog  web  18025:8025   (simulated victim inbox)
+#   mailhog  smtp 11025:1025   (SMTP GoPhish sends to - no real delivery)
+# The GoPhish phish/landing-page server (172.27.0.10:80) is intentionally
+# NOT published to the host - it is reachable only from inside phish_net.
+# =============================================================================
+
+services:
+  # ---- GoPhish: phishing-simulation framework -------------------------------
+  # Admin UI:        https://localhost:13333  (default login admin/admin - CHANGE IT)
+  # Phish server:    172.27.0.10:80           (internal only, NOT host-published)
+  gophish:
+    image: gophish/gophish:latest
+    container_name: week12-gophish
+    hostname: gophish
+    ports:
+      - "13333:3333"          # admin UI (host:container) - contract sec 6
+    networks:
+      phish_net:
+        ipv4_address: 172.27.0.10
+    restart: unless-stopped
+
+  # ---- MailHog: fake mail server + catch-all inbox --------------------------
+  # Web UI (victim inbox): http://localhost:18025
+  # SMTP (GoPhish -> here): 172.27.0.11:1025  (no auth, no real delivery)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: week12-mailhog
+    hostname: mailhog
+    ports:
+      - "18025:8025"          # web UI (host:container) - contract sec 6
+      - "11025:1025"          # SMTP   (host:container) - contract sec 6
+    networks:
+      phish_net:
+        ipv4_address: 172.27.0.11
+    restart: unless-stopped
+
+  # ---- Attacker: Kali base for crafting payloads + analysing delivered mail -
+  attacker:
+    image: ethical-base
+    container_name: week12-attacker
+    hostname: attacker
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    command: >
+      /bin/bash -c "
+      apt-get update -qq && apt-get install -y -qq jq >/dev/null 2>&1 || true &&
+      echo 'Week 12 attacker ready. Run: docker exec -it week12-attacker bash' &&
+      echo 'MailHog inbox API -> http://mailhog:8025/api/v2/' &&
+      echo 'GoPhish phish server (internal) -> http://172.27.0.10' &&
+      tail -f /dev/null"
+    networks:
+      phish_net:
+        ipv4_address: 172.27.0.2
+
+networks:
+  phish_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.27.0.0/24

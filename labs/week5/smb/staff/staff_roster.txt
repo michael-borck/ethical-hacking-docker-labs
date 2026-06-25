@@ -1,0 +1,15 @@
+EnumCorp // STAFF SHARE  (requires a named account - e.g. jdoe / Summer2024!)
+==============================================================================
+
+Internal staff directory (excerpt)
+----------------------------------
+  jdoe         Jane Doe            IT          jdoe@enum.lab
+  asmith       Alex Smith          Support     asmith@enum.lab
+  adminservice Backup Service Acct IT          adminservice@enum.lab
+  mharrison    Marcus Harrison     Executive   mharrison@enum.lab
+
+Reminders
+---------
+* The nightly backup uses the adminservice account. Ops note: the backup
+  password is documented in the LDAP directory under that account - it should
+  NOT also be stored in the MySQL system_config table (please clean that up).

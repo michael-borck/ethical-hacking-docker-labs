@@ -1,0 +1,6 @@
+EnumCorp Acceptable Use Policy (Public Excerpt)
+------------------------------------------------
+* Internal networks are for authorised business use only.
+* Backups run nightly as the 'adminservice' account. Contact NOC if a restore
+  is needed (noc@enum.lab).
+* Never share passwords. IT will NEVER ask for your password by email.

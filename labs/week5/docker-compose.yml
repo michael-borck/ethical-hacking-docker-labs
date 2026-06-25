@@ -1,0 +1,167 @@
+# =============================================================================
+# Week 5 - System and Network Enumeration (LDAP / SMB / MySQL / SNMP)
+# =============================================================================
+# Isolated lab network: enum_net 172.22.0.0/24  (contract sec 6 - do not change)
+# Host ports (contract sec 6):
+#   ldap          1389:389    (OpenLDAP - bind/search from host if desired)
+#   mysql         23306:3306  (MySQL 8 - connect from host if desired)
+#   phpldapadmin  14081:80    (phpLDAPadmin web UI)
+# SMB (445) and SNMP (161/udp) are kept INTERNAL-ONLY on enum_net so the
+# lab never touches host port 445 (SMB on macOS/Windows) or 161.
+#
+# Targets:
+#   172.22.0.10  ldap         OpenLDAP (dc=enum,dc=lab, admin pass: admin)
+#   172.22.0.11  ldap-admin   phpLDAPadmin web UI
+#   172.22.0.12  mysql        MySQL 8  (db: employees, root pass: enumR0ot)
+#   172.22.0.13  smb          Samba shares 'public' (anon) + 'staff' (jdoe)
+#   172.22.0.14  snmp         SNMP simulator (community: public, "router")
+#   172.22.0.15  netshoot     general-purpose network toolbox
+#   172.22.0.2   attacker     Kali (ethical-base) - the enumeration workstation
+# =============================================================================
+
+services:
+  # ---- Attacker: Kali enumeration workstation -------------------------------
+  # Runs as root so the startup command can apt-get install enumeration
+  # tooling (ldap-utils, smbclient, snmp, default-mysql-client, enum4linux).
+  # nmap/hydra/john/etc. already ship in ethical-base.
+  attacker:
+    image: ethical-base
+    container_name: week5-attacker
+    hostname: attacker
+    user: root
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      export DEBIAN_FRONTEND=noninteractive &&
+      apt-get update || true &&
+      apt-get install -y ldap-utils default-mysql-client || true &&
+      apt-get install -y smbclient || true &&
+      apt-get install -y snmp snmp-mibs-downloader || true &&
+      (apt-get install -y enum4linux || apt-get install -y enum4linux-ng || true) &&
+      echo '' &&
+      echo 'Week 5 attacker ready. Run: docker exec -it week5-attacker bash' &&
+      echo 'Targets on enum_net 172.22.0.0/24:' &&
+      echo '  ldap   172.22.0.10:389   phpLDAPadmin -> http://localhost:14081' &&
+      echo '  mysql  172.22.0.12:3306 (root / enumR0ot)' &&
+      echo '  smb    172.22.0.13:445  (shares: public, staff)' &&
+      echo '  snmp   172.22.0.14:161  (community: public)' &&
+      tail -f /dev/null"
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.2
+
+  # ---- LDAP target: OpenLDAP seeded with EnumCorp users/groups --------------
+  # Bind/search:  ldapsearch -x -H ldap://172.22.0.10 -b dc=enum,dc=lab
+  # Admin bind:   cn=admin,dc=enum,dc=lab  /  admin
+  # --copy-service lets the entrypoint process the mounted bootstrap LDIF.
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: week5-ldap
+    hostname: ldap
+    environment:
+      - LDAP_ORGANISATION=EnumCorp
+      - LDAP_DOMAIN=enum.lab
+      - LDAP_BASE_DN=dc=enum,dc=lab
+      - LDAP_ADMIN_PASSWORD=admin
+    command: --copy-service
+    volumes:
+      - ./ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    ports:
+      - "1389:389"
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.10
+
+  # ---- phpLDAPadmin: browse/query the directory from a web UI ---------------
+  # http://localhost:14081  -> login DN: cn=admin,dc=enum,dc=lab  pass: admin
+  ldap-admin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: week5-phpldapadmin
+    hostname: ldap-admin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOST=ldap
+    ports:
+      - "14081:80"
+    depends_on:
+      - ldap
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.11
+
+  # ---- MySQL 8 target: 'employees' db with a sensitive 'salaries' table ----
+  # Connect from the attacker:  mysql -h 172.22.0.12 -u root -p   (enumR0ot)
+  mysql:
+    image: mysql:8
+    container_name: week5-mysql
+    hostname: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=enumR0ot
+      - MYSQL_DATABASE=employees
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "23306:3306"
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.12
+
+  # ---- SMB target: Samba shares (INTERNAL-ONLY, host port 445 never used) ---
+  #   public  - anonymous read-only share
+  #   staff   - read/write for user jdoe / Summer2024!
+  smb:
+    image: ghcr.io/servercontainers/samba:smbd-only-latest
+    container_name: week5-smb
+    hostname: smb
+    environment:
+      # ACCOUNT_<user> + UID_<user> create the Samba/system account.
+      # Values are quoted because the share stanzas start with '[' (a YAML
+      # flow-sequence indicator) and the password ends with '!'.
+      - "ACCOUNT_jdoe=Summer2024!"
+      - "UID_jdoe=2000"
+      # SAMBA_VOLUME_CONFIG_<name>: ';' separates smb.conf lines; the
+      # [sharename] section header MUST come first.
+      - "SAMBA_VOLUME_CONFIG_public=[public]; path = /shares/public; read only = yes; guest ok = yes; browseable = yes"
+      - "SAMBA_VOLUME_CONFIG_staff=[staff]; path = /shares/staff; valid users = jdoe; read only = no; browseable = yes; guest ok = no"
+    volumes:
+      - ./smb/public:/shares/public
+      - ./smb/staff:/shares/staff
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.13
+
+  # ---- SNMP target: SNMP simulator (INTERNAL-ONLY, host port 161 never used) -
+  # Simulated router. The community string maps to the data-file name
+  # (snmp/public.snmprec -> community "public"). Data dir mounted read-only.
+  snmp:
+    image: tandrup/snmpsim
+    container_name: week5-snmp
+    hostname: snmp
+    volumes:
+      - ./snmp:/usr/local/snmpsim/data:ro
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.14
+
+  # ---- netshoot: general-purpose network toolbox ----------------------------
+  netshoot:
+    image: nicolaka/netshoot
+    container_name: week5-netshoot
+    hostname: netshoot
+    command: tail -f /dev/null
+    networks:
+      enum_net:
+        ipv4_address: 172.22.0.15
+
+networks:
+  enum_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24

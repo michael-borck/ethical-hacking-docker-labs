@@ -1,0 +1,17 @@
+# ACME GateKeeper-2000 - enrolled employee badges
+# Format: FACILITY:SUBSYS:ID  (hex), one UID per line.
+# Lines starting with '#' are ignored by the reader.
+#
+# NOTE: the hidden vendor-default "maintenance master" UID is NOT listed here -
+# it is compiled into the reader firmware (see app.py, VENDOR_MASTER) and was
+# never changed at install. Classic default-credential risk.
+
+# Bob - Engineering  (this is the one you can find by simple enumeration of the
+# 04A2:1B:XX space, since only this facility/subsystem pair is in that range)
+04A2:1B:2F
+
+# Dana - Finance     (different subsystem 9F - NOT in the simple enum range)
+04A2:9F:11
+
+# Eric - Executive   (different subsystem 9F - NOT in the simple enum range)
+04A2:9F:42

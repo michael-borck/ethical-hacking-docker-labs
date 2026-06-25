@@ -1,0 +1,107 @@
+# EnumCorp directory seed for the Week 5 enumeration lab.
+# Loaded by osixia/openldap after the default bootstrap that already creates
+# the base entry dc=enum,dc=lab (from LDAP_DOMAIN=enum.lab). This file only
+# adds organizational units, users and groups to enumerate.
+#
+# Anonymous search is enabled by default in the osixia image, so students can
+# run:  ldapsearch -x -H ldap://172.22.0.10 -b dc=enum,dc=lab
+# without binding. The "adminservice" account's description leaks a backup
+# password - the key finding of the LDAP exercise.
+
+# ---- Organizational units ---------------------------------------------------
+dn: ou=people,dc=enum,dc=lab
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+description: EnumCorp staff accounts
+
+dn: ou=groups,dc=enum,dc=lab
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+description: EnumCorp security groups
+
+# ---- People -----------------------------------------------------------------
+dn: uid=jdoe,ou=people,dc=enum,dc=lab
+objectClass: inetOrgPerson
+objectClass: top
+uid: jdoe
+cn: Jane Doe
+sn: Doe
+givenName: Jane
+displayName: Jane Doe
+mail: jdoe@enum.lab
+title: Network Engineer
+departmentNumber: IT
+employeeNumber: 1001
+telephoneNumber: +1-555-0102
+mobile: +1-555-0199
+userPassword: jdoe-ldap-2024
+
+dn: uid=asmith,ou=people,dc=enum,dc=lab
+objectClass: inetOrgPerson
+objectClass: top
+uid: asmith
+cn: Alex Smith
+sn: Smith
+givenName: Alex
+displayName: Alex Smith
+mail: asmith@enum.lab
+title: Helpdesk Technician
+departmentNumber: Support
+employeeNumber: 1044
+telephoneNumber: +1-555-0144
+userPassword: summertime
+
+dn: uid=adminservice,ou=people,dc=enum,dc=lab
+objectClass: inetOrgPerson
+objectClass: top
+uid: adminservice
+cn: Backup Service Account
+sn: Service
+givenName: Backup
+displayName: Automated Backup Service
+mail: adminservice@enum.lab
+title: Automated Backup Account
+departmentNumber: IT
+employeeNumber: 0001
+description: Service account used by the nightly backup script. NOTE TO OPS: backup password is BaK-2024-c0ld! - rotate every 90 days. Do NOT reuse on production shares.
+userPassword: BaK-2024-c0ld!
+
+dn: uid=mharrison,ou=people,dc=enum,dc=lab
+objectClass: inetOrgPerson
+objectClass: top
+uid: mharrison
+cn: Marcus Harrison
+sn: Harrison
+givenName: Marcus
+displayName: Marcus Harrison
+mail: mharrison@enum.lab
+title: Chief Information Security Officer
+departmentNumber: Executive
+employeeNumber: 0007
+telephoneNumber: +1-555-0100
+userPassword: change-me-soon
+
+# ---- Groups -----------------------------------------------------------------
+dn: cn=it-admins,ou=groups,dc=enum,dc=lab
+objectClass: groupOfNames
+objectClass: top
+cn: it-admins
+description: IT administrators with elevated directory access
+member: uid=jdoe,ou=people,dc=enum,dc=lab
+member: uid=adminservice,ou=people,dc=enum,dc=lab
+
+dn: cn=support,ou=groups,dc=enum,dc=lab
+objectClass: groupOfNames
+objectClass: top
+cn: support
+description: First-line support staff
+member: uid=asmith,ou=people,dc=enum,dc=lab
+
+dn: cn=executives,ou=groups,dc=enum,dc=lab
+objectClass: groupOfNames
+objectClass: top
+cn: executives
+description: Executive leadership
+member: uid=mharrison,ou=people,dc=enum,dc=lab

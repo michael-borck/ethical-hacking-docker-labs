@@ -1,0 +1,13 @@
+EnumCorp // PUBLIC SHARE (read-only, anonymous)
+================================================
+
+Welcome to the EnumCorp public file share. This folder is readable by anyone
+on the internal network - including unauthenticated (anonymous) users, which
+makes it a great target for SMB enumeration practice.
+
+- Public company documents and forms live here.
+- Sensitive material is NOT stored here (see the staff share, which requires
+  a named account such as jdoe@enum.lab).
+
+Happy enumerating!
+  -- EnumCorp IT

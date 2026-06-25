@@ -1,0 +1,69 @@
+<!--
+  ============================================================================
+  *** SIMULATION / TRAINING USE ONLY - NOT A REAL LOGIN PAGE ***
+  GoPhish LANDING PAGE: fake "ACME single sign-on" credential-harvest page.
+
+  Any username/password typed here is captured by GoPhish and shown in the
+  Campaign -> Results panel ("Submitted Data"). This page is served only by the
+  GoPhish phish server on the INTERNAL lab network (172.27.0.10:80) and is
+  NEVER reachable from the real internet.
+
+  How to import in GoPhish:
+    Landing Pages -> New Page -> Source
+    paste this entire file, set Name = "acme-sso", click "Save".
+
+  The {{.RId}} token lets GoPhish link a submitted form back to the recipient
+  who received the phishing link. Do NOT remove it.
+  ============================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACME - Sign in</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#f2f4f7;color:#222;}
+    .wrap{max-width:440px;margin:7% auto;padding:0 16px;}
+    .card{background:#fff;border:1px solid #e1e5ea;border-radius:8px;padding:36px 32px;}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+    .dot{width:30px;height:30px;border-radius:6px;background:#0b3d91;display:inline-block;}
+    .logo b{font-size:18px;letter-spacing:.4px;}
+    h1{font-size:20px;margin:0 0 6px;font-weight:600;}
+    .sub{font-size:13px;color:#667;margin:0 0 22px;}
+    label{display:block;font-size:13px;margin:14px 0 6px;color:#334;}
+    input{width:100%;padding:10px 12px;border:1px solid #cdd3da;border-radius:5px;font-size:14px;}
+    button{margin-top:22px;width:100%;padding:11px;border:0;border-radius:5px;background:#0b3d91;color:#fff;font-size:15px;font-weight:600;cursor:pointer;}
+    .foot{margin-top:18px;font-size:11px;color:#8893a3;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="logo"><span class="dot"></span><b>ACME&nbsp;Corporation</b></div>
+      <h1>Sign in</h1>
+      <p class="sub">Use your ACME organisational account to continue.</p>
+
+      <!--
+        SIMULATION: credentials entered below are captured by GoPhish and shown
+        in Campaign -> Results. Nothing is sent over the real internet.
+      -->
+      <form method="post" action="">
+        <!-- {{.RId}} tells GoPhish which recipient submitted this form. -->
+        <input type="hidden" name="rid" value="{{.RId}}" />
+
+        <label for="username">Email or username</label>
+        <input id="username" name="username" type="text" placeholder="you@acme.com" autocomplete="off" />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Password" autocomplete="off" />
+
+        <button type="submit">Sign in</button>
+      </form>
+
+      <p class="foot">&copy; 2025 ACME Corporation &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </div>
+  </div>
+</body>
+</html>

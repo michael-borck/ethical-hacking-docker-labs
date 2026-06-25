@@ -1,0 +1,76 @@
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Vulnerable target — compiles & runs the 32-bit BOF service with ALL
+  # modern protections disabled so students learn the classic exploit first.
+  # ─────────────────────────────────────────────────────────────────────────
+  target:
+    image: ubuntu:22.04
+    # Force x86_64 so -m32 yields a genuine 32-bit x86 binary (EIP / jmp esp).
+    # On Apple Silicon this runs under Docker's amd64 emulation — fine for a
+    # tiny server. On x86 hosts it is effectively a no-op.
+    platform: linux/amd64
+    container_name: week10-target
+    hostname: target
+    privileged: true          # required to write /proc/sys/.../randomize_va_space
+    ports:
+      - "24444:4444"
+    volumes:
+      - ./vuln-server.c:/vuln-server.c:ro
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      apt-get update &&
+      apt-get install -y gcc gcc-multilib gdb &&
+      gcc -m32 -fno-stack-protector -z execstack -no-pie -o /vuln /vuln-server.c &&
+      ( echo 0 > /proc/sys/kernel/randomize_va_space || echo '[target] WARN: could not disable ASLR (sysctl read-only)' ) ;
+      echo '[target] /vuln ready: 32-bit x86, no-PIE, no-canary, execstack' ;
+      ( while true; do /vuln; echo '[target] /vuln exited or crashed — restarting in 1s'; sleep 1; done ) &
+      sleep 1 ;
+      pgrep -a vuln || true ;
+      echo '[target] connect: nc 172.25.0.10 4444  (host port 24444)' ;
+      tail -f /dev/null"
+    networks:
+      bof_net:
+        ipv4_address: 172.25.0.10
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Attacker — pwntools + gdb + ROPgadget for exploit development.
+  # Runs as root so apt-get / pip work inside the inline command.
+  # ─────────────────────────────────────────────────────────────────────────
+  attacker:
+    image: ethical-base
+    container_name: week10-attacker
+    hostname: attacker
+    user: root
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE            # allows ptrace/gdb for tracing processes
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./exploits:/exploits
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    command: >
+      /bin/bash -c "
+      apt-get update &&
+      apt-get install -y gdb &&
+      pip3 install --break-system-packages pwntools ROPgadget &&
+      echo 'Week 10 attacker ready. Run: docker exec -it week10-attacker bash' &&
+      echo 'Exploits mounted at /exploits. Target: 172.25.0.10:4444 (host 24444).' &&
+      tail -f /dev/null"
+    networks:
+      bof_net:
+        ipv4_address: 172.25.0.2
+    restart: unless-stopped
+
+networks:
+  bof_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24

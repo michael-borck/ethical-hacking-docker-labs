@@ -1,0 +1,7 @@
+# macOS AppleDouble resource-fork files (common on external volumes)
+._*
+# Python build artifacts
+__pycache__/
+*.py[cod]
+# Editor / OS cruft
+.DS_Store
