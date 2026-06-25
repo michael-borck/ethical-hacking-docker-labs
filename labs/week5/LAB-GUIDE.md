@@ -1,5 +1,4 @@
-# Week 5: System and Network Enumeration — Student Worksheet
-## CYB204 Ethical Hacking · Beginner Lab
+# Week 5: System and Network Enumeration — Lab Guide
 
 Name: ______________________   Date: ____________   Partner: __________________
 
@@ -9,13 +8,13 @@ Name: ______________________   Date: ____________   Partner: __________________
 
 ### **Important Rules**
 ✅ **DO:** Only enumerate inside this Docker lab network (`172.22.0.0/24`)
-✅ **DO:** Write down what you find — the worksheet is your report
+✅ **DO:** Write down what you find — this lab guide is your report
 ✅ **DO:** Ask for help if a command errors or a service will not respond
 ✅ **DO:** Treat every leaked credential as a real finding to report
 ❌ **DON'T:** Point these tools at any network you do not own
 ❌ **DON'T:** Reuse a password you discover on a real account
 ❌ **DON'T:** Skip SNMP because it is "just UDP" — it leaks a lot
-❌ **DON'T:** Share found credentials outside of class
+❌ **DON'T:** Share found credentials outside this lab
 
 ### **Quick Setup**
 ```bash
@@ -285,6 +284,5 @@ _______________________________________________________________
    - D) `SELECT * FROM tables;`
 
 ---
-**Total lab time ≈ 95 minutes.**  Keep this worksheet as your engagement record.
+**Total lab time ≈ 95 minutes.**  Keep this lab guide as your engagement record.
 
-**Instructor contact:** _________________________________

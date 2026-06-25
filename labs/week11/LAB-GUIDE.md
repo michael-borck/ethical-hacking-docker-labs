@@ -1,5 +1,4 @@
-# Week 11: Bypassing Physical Access - Student Worksheet
-## CYB204 Ethical Hacking - Beginner Lab
+# Week 11: Bypassing Physical Access — Lab Guide
 
 ---
 
@@ -17,7 +16,7 @@ delivery method.
 ### **Important Rules**
 - ✅ **DO:** Only attack the lab reader at `172.26.0.10`
 - ✅ **DO:** Ask for help if you get stuck
-- ✅ **DO:** Write your answers in this worksheet
+- ✅ **DO:** Write your answers in this lab guide
 - ❌ **DON'T:** Try any of this on a real badge, door, or building
 - ❌ **DON'T:** Clone or replay a badge you don't own - that's a crime
 - ❌ **DON'T:** Tailgate into any real building, even "to test"
@@ -213,7 +212,7 @@ scenario LEGAL or ILLEGAL:
 
 | Scenario | Legal? |
 |----------|--------|
-| Cloning your own office badge for a class demo | |
+| Cloning your own office badge for this lab | |
 | Copying a coworker's badge to "see if it works" | |
 | Following someone through a secure door without a badge (tailgating) | |
 | A physical pentest of your employer's building **with a signed scope + escort** | |
@@ -267,4 +266,3 @@ test.
 
 ---
 
-**Instructor Contact:** _________________________________

@@ -1,5 +1,4 @@
 # Week 10: Exploit Development — Buffer Overflows
-## CYB204 Ethical Hacking — Beginner Lab
 
 ---
 
@@ -9,8 +8,8 @@
 ✅ **DO:** Only attack the lab target (`172.25.0.10`) inside Docker
 ✅ **DO:** Ask for help the moment gdb or pwntools confuses you
 ✅ **DO:** Write down every offset and address you find — you will reuse them
-❌ **DON'T:** Run any of this against a real or school network
-❌ **DON'T:** Share a working exploit for a live service outside class
+❌ **DON'T:** Run any of this against a real or production network
+❌ **DON'T:** Share a working exploit for a real service outside this lab
 ❌ **DON'T:** Skip the bad-character step — it is why "almost working" payloads fail
 
 ### **What you need to know first**
@@ -225,9 +224,9 @@ This skill — finding a memory-corruption bug and turning it into code executio
 
 | Scenario | OK? |
 |----------|-----|
-| Exploiting the lab container in class | |
+| Exploiting this isolated lab container | |
 | Reporting a buffer overflow you found in a bug-bounty program | |
-| Running this exploit against your school's login portal "to check" | |
+| Running this exploit against your organization's login portal "to check" | |
 | Using this to win a CTF challenge | |
 | Selling a working exploit for a real product to strangers online | |
 | Re-testing a client's app **after** the engagement contract ended | |
@@ -285,6 +284,3 @@ _________________________________
 7. **True/False: With all protections ON, buffer overflows are impossible.**
    - True / False *(they are harder, not impossible)*
 
----
-
-**Instructor Contact:** _________________________________

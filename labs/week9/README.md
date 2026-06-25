@@ -143,7 +143,7 @@ curl http://localhost:8081
 # Option 2: reuse the SOCKS proxy from (c) — no new tunnel needed
 proxychains curl http://172.24.0.6:8080
 ```
-**Flag:** `FLAG{lateral_movement_success}` — paste it in your worksheet.
+**Flag:** `FLAG{lateral_movement_success}` — record it in your lab guide.
 *Bonus:* query `internal-db` through the SOCKS proxy for `SELECT * FROM corpdb.secrets;` to
 find `FLAG{deep_dive_db_access}`.
 

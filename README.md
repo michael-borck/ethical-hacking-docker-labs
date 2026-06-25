@@ -1,12 +1,12 @@
-# Ethical Hacking Course Docker Labs
+# Ethical Hacking Docker Labs
 
 <!-- BADGES:START -->
 [![cybersecurity](https://img.shields.io/badge/-cybersecurity-f44336?style=flat-square)](https://github.com/topics/cybersecurity) [![docker](https://img.shields.io/badge/-docker-2496ed?style=flat-square)](https://github.com/topics/docker) [![docker-compose](https://img.shields.io/badge/-docker--compose-blue?style=flat-square)](https://github.com/topics/docker-compose) [![edtech](https://img.shields.io/badge/-edtech-4caf50?style=flat-square)](https://github.com/topics/edtech) [![educational](https://img.shields.io/badge/-educational-blue?style=flat-square)](https://github.com/topics/educational) [![ethical-hacking](https://img.shields.io/badge/-ethical--hacking-blue?style=flat-square)](https://github.com/topics/ethical-hacking) [![kali-linux](https://img.shields.io/badge/-kali--linux-blue?style=flat-square)](https://github.com/topics/kali-linux) [![penetration-testing](https://img.shields.io/badge/-penetration--testing-blue?style=flat-square)](https://github.com/topics/penetration-testing) [![security-training](https://img.shields.io/badge/-security--training-blue?style=flat-square)](https://github.com/topics/security-training) [![vulnerability-assessment](https://img.shields.io/badge/-vulnerability--assessment-blue?style=flat-square)](https://github.com/topics/vulnerability-assessment)
 <!-- BADGES:END -->
 
-This repository organizes Docker labs for a 12-week ethical hacking course. Each week has a dedicated folder with Docker Compose setups, READMEs, and resources aligned to the course topics.
+A hands-on, self-paced ethical hacking lab series — 12 Docker-based labs you can run anywhere. Each lab lives in its own folder with a Docker Compose setup, a lab guide, and supporting resources.
 
-## Course Alignment
+## Labs
 
 | Week | Topic | Lab Focus | Key Tools/Services |
 |------|--------|-----------|-------------------|
@@ -30,7 +30,7 @@ All labs share a base Kali image, `ghcr.io/michael-borck/ethical-base`, built fr
 - **Default (online)**: `docker compose up -d` pulls the prebuilt image — no local build step.
 - **Fallback (offline, or to customise the tools)**: `make build-base` builds `base.Dockerfile` locally and tags it with the same name, so `docker compose up` uses your local copy automatically.
 
-> After the first workflow run, set the package to **Public** at `github.com/users/michael-borck/packages/container/ethical-base/settings` so students can pull without authenticating.
+> After the first workflow run, set the package to **Public** at `github.com/users/michael-borck/packages/container/ethical-base/settings` so anyone can pull without authenticating.
 
 ## Usage
 
@@ -49,7 +49,7 @@ All labs share a base Kali image, `ghcr.io/michael-borck/ethical-base`, built fr
 Repo-root convenience targets: `make run-weekN` (start week *N*), `make status` (list all weeks), `make pull-base` (refresh the base image), `make build-base` (build the base locally).
 
 ### Lab Status
-All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `STUDENT-WORKSHEET.md`, and any seed files its services need.
+All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `LAB-GUIDE.md`, and any seed files its services need.
 
 ## Structure
 - `base.Dockerfile`: Shared Kali base image source.

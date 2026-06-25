@@ -1,7 +1,7 @@
 # Penetration Testing Strategy Guide
 ## The "Intelligence-First" Approach
 
-**For Students:** Understanding the methodology behind effective penetration testing
+**Purpose:** Understand the methodology behind effective penetration testing
 
 ---
 
@@ -228,7 +228,7 @@ This black box methodology mirrors how **actual cybercriminals** operate when th
 
 ---
 
-## Key Principles for Students
+## Key Principles
 
 ### **1. Intelligence → Action**
 Always gather information before attacking. Knowledge is your most powerful weapon.
@@ -247,7 +247,7 @@ Let discovered information guide your next moves, don't work against it.
 
 ---
 
-## Common Student Mistakes to Avoid
+## Common Mistakes to Avoid
 
 ### **❌ Mistake 1: Skipping Reconnaissance**
 ```bash

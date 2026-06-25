@@ -1,5 +1,4 @@
 # Week 4: Nmap Scanning & Scan Reporting
-## CYB204 Ethical Hacking — Beginner Lab
 
 ---
 
@@ -333,7 +332,7 @@ Mark each scenario as OK (authorized) or NOT OK:
 | Scenario                                                     | OK? |
 |--------------------------------------------------------------|-----|
 | Scanning `172.21.0.0/24` in this lab                         |     |
-| Running `nmap -sS` against your school's website             |     |
+| Running `nmap -sS` against your organization's website    |     |
 | Scanning a server a client gave you written permission for   |     |
 | Saving scan output to include in a paid pentest report       |     |
 | Scanning a random public IP "to see what's there"            |     |

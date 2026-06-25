@@ -1,6 +1,6 @@
-# De-ICE S1.100 - Instructor Walkthrough & Answer Key
+# De-ICE S1.100 — Walkthrough & Solutions
 
-This document provides complete solutions for educators running the De-ICE S1.100 Docker lab.
+This document provides complete solutions and expected outcomes for the De-ICE S1.100 Docker lab. Use it to verify your findings as you work through the lab guide.
 
 ## Lab Setup Verification
 
@@ -42,7 +42,7 @@ Host is up (0.000011s latency).
 - 172.20.0.6 - Mail server (Dovecot POP3/IMAP)
 - 172.20.0.7 - Attacker machine (Kali)
 
-## Phase 1: Reconnaissance (Expected Student Results)
+## Phase 1: Reconnaissance (Expected Results)
 
 ### Network Discovery and Port Scanning
 ```bash
@@ -66,7 +66,7 @@ curl http://172.20.0.5
 ```
 
 **Expected Findings:**
-Students should extract these employee names and emails:
+You should extract these employee names and emails:
 - Alice Adams → aadams@de-ice.net → username: aadams
 - Bob Banter → bbanter@de-ice.net → username: bbanter
 - Carol Coffee → ccoffee@de-ice.net → username: ccoffee
@@ -145,7 +145,7 @@ EOF
 
 ### SSH Brute Force Attack
 
-**Educational Brute Force Attack:**
+**Brute Force Attack:**
 ```bash
 hydra -L users.txt -P passwords.txt 172.20.0.3 ssh -t 4
 ```
@@ -155,12 +155,12 @@ hydra -L users.txt -P passwords.txt 172.20.0.3 ssh -t 4
 [22][ssh] host: 172.20.0.3   login: aadams   password: smadaa
 ```
 
-**Teaching Points for Discussion:**
+**Key Takeaways:**
 
 1. **Password Pattern Recognition:**
    - The successful password "smadaa" is "aadams" reversed
    - This demonstrates common weak password patterns users create
-   - Students should learn to recognize and exploit such patterns
+   - You'll learn to recognize and exploit such patterns
 
 2. **Real-World OSINT Password Generation:**
    In practice, passwords would be discovered through:
@@ -232,7 +232,7 @@ Eve Eikman,Legal Affairs,72000,1999-11-30
 ## Phase 5: Advanced Exploitation (Optional)
 
 ### Password Pattern Analysis
-Students should notice that `smadaa` is `aadams` reversed, suggesting:
+You should notice that `smadaa` is `aadams` reversed, suggesting:
 1. Passwords may be reversed words
 2. Other users might have similar patterns
 
@@ -252,14 +252,14 @@ telnet 172.20.0.6 143
 # Expected: Dovecot IMAP server ready
 ```
 
-## Common Student Errors & Troubleshooting
+## Common Errors & Troubleshooting
 
 ### Error: "Connection Refused"
-**Cause:** Student using wrong IP address/port
+**Cause:** Using the wrong IP address/port
 **Solution:** Ensure using correct IP addresses discovered from network scan and correct ports
 
 ### Error: "Host not found"
-**Cause:** Student not in attacker container
+**Cause:** Not in the attacker container
 **Solution:** `docker exec -it de-ice-attacker bash`
 
 ### Error: "Hydra shows no results"
@@ -267,32 +267,12 @@ telnet 172.20.0.6 143
 **Solution:** Ensure using `-s 2222` for SSH port
 
 ### Error: "FTP login fails"
-**Cause:** Student entering wrong credentials
+**Cause:** Entering the wrong credentials
 **Solution:** Use `anonymous` / `anonymous` or just press Enter for password
 
 ### Error: "File decryption fails"
 **Cause:** Wrong password or algorithm
 **Solution:** Use exact command: `openssl enc -aes-256-cbc -d -salt -in salary_dec2003.csv.enc -out salary.csv -k "HeadOfSecurity"`
-
-## Assessment Rubric
-
-### Basic Level (Pass)
-- [ ] Successfully discovers open ports
-- [ ] Extracts usernames from website
-- [ ] Connects to FTP anonymously
-- [ ] Downloads encrypted file
-
-### Intermediate Level (Credit)
-- [ ] Successfully brute forces SSH
-- [ ] Gains SSH access with aadams account
-- [ ] Decrypts salary file
-- [ ] Documents findings clearly
-
-### Advanced Level (Distinction)
-- [ ] Enumerates all services thoroughly
-- [ ] Identifies password patterns
-- [ ] Explores additional attack vectors
-- [ ] Provides detailed security recommendations
 
 ## Security Lessons Learned
 
@@ -303,7 +283,7 @@ telnet 172.20.0.6 143
 4. **Weak Encryption:** Predictable encryption password
 5. **Service Enumeration:** Multiple unnecessary services exposed
 
-### Defensive Recommendations Students Should Identify
+### Defensive Recommendations to Identify
 1. Remove employee details from public website
 2. Implement strong password policies
 3. Disable anonymous FTP access
@@ -340,4 +320,4 @@ chmod +x setup.sh
 chmod +x attacker-tools/*.sh
 ```
 
-This walkthrough provides complete solutions and expected outcomes for all lab phases. Students should be able to achieve all listed results following the penetration testing methodology.
+This walkthrough provides complete solutions and expected outcomes for all lab phases. You should be able to achieve all listed results following the penetration testing methodology.

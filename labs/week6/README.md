@@ -1,349 +1,95 @@
-# Week 6: Password Security & Ethical Hacking Lab
-## CYB204 Ethical Hacking - Hands-on Password Security Module
+# Week 6: Password Security — Cracking & Defense Lab
 
-A comprehensive, beginner-friendly lab environment for teaching password security, ethical hacking principles, and professional penetration testing techniques.
+## Overview
+A self-paced introduction to password security. You learn how passwords are stored
+as hashes, crack weak ones offline with John the Ripper, run an online SSH brute
+force with Hydra against a practice target, and turn those findings into stronger
+password habits — all inside an isolated Docker network. No external system is ever
+contacted.
 
----
+## Learning Objectives
+- Explain password hashing and why hashes are one-way.
+- Identify common hash types (MD5, SHA-1, SHA-256) by length and format.
+- Crack offline hashes with John the Ripper using wordlists.
+- Run an online SSH brute force with Hydra against a practice target.
+- Evaluate password strength and design a strong-password policy.
+- Apply the legal and ethical boundaries of password testing.
 
-## 📋 Overview
-
-This repository contains all materials needed to deliver a 90-minute hands-on workshop on password security. Students will learn how passwords are stored, common attack methods, and defensive strategies - all within a safe, legal Docker environment.
-
-### Learning Outcomes
-- Understand password hashing and storage mechanisms
-- Identify different hash types and their vulnerabilities
-- Use industry-standard tools (John the Ripper, Hashcat, Hydra)
-- Apply ethical hacking principles and legal boundaries
-- Create and evaluate strong password policies
-- Document findings in professional reports
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
-- 4GB RAM minimum
-- 2GB free disk space
-- Terminal/Command prompt access
-
-### Setup (2 minutes)
+## Setup (3 min)
 ```bash
-# 1. Clone this repository
-git clone https://github.com/your-username/week06-password-security.git
-cd week06-password-security
+# 1. Clone the repo and enter the lab directory
+git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
+cd ethical-hacking-docker-labs/labs/week6
 
-# 2. Run the setup script
-chmod +x setup.sh
-./setup.sh
+# 2. Start the lab
+docker compose up -d
 
-# 3. Start the lab environment
-docker-compose up -d
+# 3. Enter the container
+docker exec -it password-cracking-lab bash
+```
+> `setup-script.sh` (optional) regenerates `wordlists/` and `hashes/` and fetches the
+> RockYou top-1000 sample into `wordlists/rockyou-small.txt`.
 
-# 4. Enter the lab container
-docker exec -it password-cracking-lab sh
+Container map (all on `labnet`):
 
-# You're ready to start!
+| Container             | Hostname      | Role                                 | Host port |
+|-----------------------|---------------|--------------------------------------|-----------|
+| password-cracking-lab | hacklab       | Your workspace (John, Hydra, Python) | —         |
+| ssh-target            | target-server | Hydra brute-force target (SSH)       | —         |
+| web-target            | web-server    | HTTP login form                      | 8080 → 80 |
+
+The lab mounts `./wordlists`, `./hashes`, and `./scripts` into the container at
+`/wordlists`, `/hashes`, and `/scripts`. See `LAB-GUIDE.md` for the full walkthrough.
+
+## What's Included
+
+```
+labs/week6/
+├── docker-compose.yml   # lab network and containers
+├── setup-script.sh      # generates wordlists/hashes, fetches the rockyou sample
+├── LAB-GUIDE.md         # full walkthrough and exercises
+├── wordlists/           # basic.txt, lab-wordlist.txt, rockyou-small.txt
+├── hashes/              # easy-md5.txt, medium-sha256.txt, john-format.txt
+└── scripts/             # hash-identifier.py, password-gen.py
 ```
 
----
+### Tools (in the container)
+- **John the Ripper** — offline, CPU-based hash cracking.
+- **Hydra** — online network-service brute force.
+- **Python 3** for inline hash generation and password-strength checks.
+- Helper scripts in `scripts/` for hash identification and password generation.
 
-## 📁 Repository Structure
+## Troubleshooting
+| Problem | Fix |
+|---------|-----|
+| "Cannot connect to Docker" | Ensure Docker Desktop / the daemon is running |
+| "No hashes cracked" | Check the hash has no trailing spaces; try `wordlists/basic.txt` first |
+| Hydra reports no valid pairs | Wait ~30 s for `ssh-target` to finish installing OpenSSH, then retry |
+| Wrong password recovered | Confirm you copied the hash with no leading/trailing whitespace |
+| Stuck on a step | Check the notes and troubleshooting in `LAB-GUIDE.md` |
 
-```
-week06-password-security/
-├── README.md                  # This file
-├── docker-compose.yml         # Docker lab environment
-├── setup.sh                   # Auto-setup script
-├── slides/                    # Lecture materials
-│   ├── module1-foundations.pdf
-│   ├── module2-offensive.pdf
-│   └── module3-defense.pdf
-├── worksheets/               
-│   ├── student-worksheet.pdf  # Main lab exercises
-│   └── student-worksheet.docx
-├── facilitator/
-│   ├── facilitator-guide.pdf # Teaching guide with answers
-│   ├── answer-key.pdf        # Quick reference answers
-│   └── grading-rubric.xlsx   # Assessment criteria
-└── resources/                 # Auto-generated by setup.sh
-    ├── wordlists/            # Password dictionaries
-    ├── hashes/               # Sample hashes to crack
-    └── scripts/              # Helper Python scripts
-```
-
----
-
-## 👩‍🎓 For Students
-
-### Getting Started
-1. Follow the Quick Start guide above
-2. Open `worksheets/student-worksheet.pdf`
-3. Complete exercises in order
-4. Ask for help if you get stuck!
-
-### Lab Modules
-- **Module 1 (40 min):** Password fundamentals and legal framework
-- **Module 2 (60 min):** Offensive techniques and tools
-- **Module 3 (40 min):** Defense strategies and reporting
-
-### Important Rules
-- ✅ **ONLY** test passwords in this lab environment
-- ✅ Work with a partner if you need help
-- ❌ **NEVER** test passwords on real websites
-- ❌ **DO NOT** share cracked passwords outside class
-
-### Troubleshooting
-| Problem | Solution |
-|---------|----------|
-| "Cannot connect to Docker" | Make sure Docker Desktop is running |
-| "Command not found" | Check for typos, commands are case-sensitive |
-| "No hashes cracked" | Try the simpler wordlist first: `/wordlists/basic.txt` |
-| Need help? | Ask your instructor or partner |
-
----
-
-## 👨‍🏫 For Instructors
-
-### Teaching Materials
-- **Slides:** Three modular presentations (can be combined or separate)
-- **Facilitator Guide:** Complete teaching guide with answers, tips, and timing
-- **Answer Key:** Quick reference for all exercises
-- **Grading Rubric:** Clear assessment criteria
-
-### Delivery Options
-1. **Traditional:** 90-minute guided workshop
-2. **Flipped:** Students review slides before, class for hands-on only
-3. **Self-paced:** Students work through modules independently
-4. **Split:** Two 45-minute sessions
-
-### Assessment Components
-- Technical completion (60%)
-- Screenshot evidence (20%)  
-- Reflection questions (20%)
-- Optional CTF bonus (+10%)
-
-### Safety Notes
-- Emphasize legal boundaries throughout
-- Monitor for unauthorized testing
-- Provide safe practice alternatives for homework
-- Document any concerning behavior
-
----
-
-## 🛠️ What's Included
-
-### Docker Containers
-1. **password-cracking-lab:** Main workspace with all tools
-2. **ssh-target:** Practice target for network attacks
-3. **web-target:** Optional HTTP target
-
-### Tools Installed
-- **John the Ripper:** CPU-based password cracking
-- **Hashcat:** GPU-accelerated cracking
-- **Hydra:** Network service attacks
-- **Python 3:** With zxcvbn for password strength testing
-- Helper scripts for hash identification
-
-### Pre-configured Resources
-- Sample MD5, SHA-1, SHA-256 hashes
-- Basic wordlist (10 passwords)
-- Extended wordlist (1000+ passwords)
-- Python scripts for hash generation/identification
-
----
-
-## 📝 Assignment Submission
-
-Students should submit:
-1. Completed worksheet (PDF)
-2. Screenshots showing successful password cracks (2-3 images)
-3. Reflection questions (200 words minimum)
-4. Optional: CTF challenge flags
-
-### Submission Template
-Available in `worksheets/submission-template.docx`
-
----
-
-## 🔒 Ethical & Legal Considerations
-
-### This Lab is Legal Because:
-- All testing occurs in isolated Docker containers
-- No external systems are accessed
-- Students own the test environment
-- Educational purpose under controlled conditions
-
-### This Would Be Illegal:
-- Testing on any website without permission
-- Attempting on university/company systems
-- Sharing cracked passwords maliciously
-- Using skills for unauthorized access
-
-### Professional Ethics
-This lab teaches skills used by:
-- Penetration testers
-- Security auditors
-- Security researchers
-- Incident responders
-
-Always obtain written authorization before testing any system you don't own.
-
----
-
-## 🐛 Common Issues & Solutions
-
-### Docker Issues
+Reset the environment:
 ```bash
-# Reset everything
-docker-compose down -v
-docker system prune -a
-# Then start fresh
+docker compose down -v
+docker compose up -d
 ```
 
-### Can't Crack Passwords
-- Verify hash format is correct
-- Try simpler wordlist first
-- Check for extra spaces/characters
-- Some hashes are meant to be uncrackable (teaching point)
+## Resources
+- [TryHackMe — Crack the Hash](https://tryhackme.com/room/crackthehash)
+- [OverTheWire — Bandit](https://overthewire.org/wargames/bandit/)
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [NIST SP 800-63B password guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
+- [Have I Been Pwned](https://haveibeenpwned.com/) — breach examples
 
-### Performance Issues
-- Reduce Hashcat workload
-- Use John instead of Hashcat
-- Close other applications
-- Try cloud-based alternatives (TryHackMe)
+## Ethics
+Educational use only. All testing stays inside this isolated Docker network — no
+external system is contacted. Running these techniques against any system you do not
+own requires **written authorization**; unauthorized password cracking is illegal in
+most jurisdictions.
 
----
-
-## 📚 Additional Resources
-
-### For Students
-- [TryHackMe - Crack the Hash](https://tryhackme.com/room/crackthehash) (Free)
-- [OverTheWire - Bandit](https://overthewire.org/wargames/bandit/)
-- [OWASP Password Security](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
-
-### For Instructors
-- [SANS Teaching Resources](https://www.sans.org/security-awareness-training/resources/posters)
-- [NIST Password Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
-- [Have I Been Pwned](https://haveibeenpwned.com/) - breach examples
-
-### Going Deeper
-- Kerberos attacks
-- Pass-the-Hash techniques
-- Rainbow table generation
-- GPU cluster cracking
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-### Ideas for Contributions
-- Additional hash challenges
-- More wordlists
-- Alternative Docker configurations
-- Translations
-- Video tutorials
-
----
-
-## 📄 License
-
-This educational material is provided under the MIT License. See LICENSE file for details.
-
-**Important:** While the materials are free to use, the techniques taught must only be used legally and ethically.
-
----
-
-## 💬 Support
-
-### Students
-- First: Check the troubleshooting section
-- Then: Ask your instructor or classmates
-- Finally: Open an issue on GitHub
-
-### Instructors
-- Email: instructor-support@university.edu
-- Office hours: [Schedule]
-- GitHub Issues: Technical problems only
-
----
-
-## 🎯 Learning Path
-
-### Where This Fits
-```
-Week 1-5: Networking & Reconnaissance
-→ **Week 6: Password Security** ← You are here
-Week 7: Vulnerability Scanning
-Week 8: Exploitation Techniques
-Week 9: Post-Exploitation
-Week 10: Reporting & Remediation
-```
-
-### Prerequisites
-- Basic command line knowledge
-- Understanding of networking concepts
-- Completed Week 1-5 materials
-
-### Next Steps
-After completing this lab:
-1. Practice on TryHackMe
-2. Try the advanced challenges
-3. Research password managers
-4. Learn about multi-factor authentication
-
----
-
-## ⚡ Quick Commands Reference
-
+## Cleanup
 ```bash
-# Start lab
-docker-compose up -d
-docker exec -it password-cracking-lab sh
-
-# Generate hash
-echo -n "password" | md5sum
-
-# Crack with John
-john --wordlist=/wordlists/basic.txt hash.txt
-
-# Crack with Hashcat
-hashcat -a 0 -m 0 hash.txt /wordlists/basic.txt
-
-# Attack with Hydra
-hydra -l admin -P /wordlists/basic.txt ssh://target
-
-# Stop lab
-exit
-docker-compose down
+docker compose down
 ```
 
----
-
-## 📈 Version History
-
-- **v1.0.0** (2024-01): Initial release
-- **v1.1.0** (2024-02): Added beginner-friendly worksheet
-- **v1.2.0** (2024-03): Enhanced with ethical hacking focus
-
----
-
-## 🙏 Acknowledgments
-
-- RockYou breach data for statistical examples
-- OWASP for security guidelines
-- Alpine Linux for lightweight containers
-- The security community for tools and knowledge
-
----
-
-**Remember:** With great power comes great responsibility. Use these skills to protect, not to harm.
-
-*Last updated: [Current Date]*
+Generated with Claude Code.

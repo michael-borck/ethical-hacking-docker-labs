@@ -3,7 +3,7 @@
 # the base entry dc=enum,dc=lab (from LDAP_DOMAIN=enum.lab). This file only
 # adds organizational units, users and groups to enumerate.
 #
-# Anonymous search is enabled by default in the osixia image, so students can
+# Anonymous search is enabled by default in the osixia image, so you can
 # run:  ldapsearch -x -H ldap://172.22.0.10 -b dc=enum,dc=lab
 # without binding. The "adminservice" account's description leaks a backup
 # password - the key finding of the LDAP exercise.

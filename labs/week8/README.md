@@ -57,8 +57,8 @@ docker exec -it de-ice-attacker bash
 
 ## Documentation
 
-- [INSTRUCTOR-WALKTHROUGH.md](INSTRUCTOR-WALKTHROUGH.md) - Complete answer key for instructors
-- [STUDENT-WORKSHEET.md](STUDENT-WORKSHEET.md) - Student lab worksheet  
+- [WALKTHROUGH.md](WALKTHROUGH.md) - Walkthrough & solutions
+- [LAB-GUIDE.md](LAB-GUIDE.md) - Lab guide
 - [PENETRATION-TESTING-STRATEGY.md](PENETRATION-TESTING-STRATEGY.md) - Educational methodology guide
 - [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md) - Plain English explanation of all commands used
 - [LINUX-BASICS.md](LINUX-BASICS.md) - Essential Linux crash course for beginners

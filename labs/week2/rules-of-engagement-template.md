@@ -1,5 +1,5 @@
 # Rules of Engagement (RoE) — Engagement Template
-## Week 2 Deliverable — Fill-In Professional Template
+## Fill-In Engagement Template
 
 A **Rules of Engagement (RoE)** document is the contract within the contract.
 The master services agreement (MSA) says you are allowed to test *something*;
@@ -9,9 +9,9 @@ a tool until both parties have signed it.
 
 Complete this template for the fictional client **Acme Logistics** described in
 `discussion-guide.md`. Replace every `_____` and every `[bracketed]` prompt with
-your own content. Bring the finished document to class.
+your own content.
 
-> **Educational note:** This template is simplified for teaching. In real
+> **Educational note:** This template is simplified for training. In real
 > engagements an RoE is reviewed by lawyers on both sides, references a signed
 > authorization letter (sometimes called a "get-out-of-jail-free" letter), and
 > often includes indemnification, insurance, and data-handling clauses. The
@@ -225,4 +225,4 @@ subject to the prohibitions in §5.
 
 ---
 
-*Template for educational use — CYB204 Ethical Hacking, Week 2.*
+*Template for authorized engagements — adapt to each engagement.*

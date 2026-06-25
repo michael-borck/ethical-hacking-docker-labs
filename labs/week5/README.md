@@ -122,7 +122,7 @@ What device is this? What is its uptime, contact, and how many interfaces?
 ### 6. Correlate findings (10 min)
 Combine the leaked LDAP/MySQL backup password with the SMB `staff` share and
 the SNMP contact address. In a real engagement these threads link one weak
-service to broader access. **Document every finding in `STUDENT-WORKSHEET.md`.**
+service to broader access. **Document every finding in `LAB-GUIDE.md`.**
 
 ## Cleanup
 ```bash

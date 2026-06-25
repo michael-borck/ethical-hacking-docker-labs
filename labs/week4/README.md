@@ -113,7 +113,7 @@ nmap -sV -oG week4-grep.txt   172.21.0.0/24   # grep-friendly one line/host
 ```
 Turn these outputs into the **engagement close-out deliverable**: a one-page scan report
 listing each host, its open ports, identified services/versions, guessed OS, and a short
-risk note per host. See `STUDENT-WORKSHEET.md` for the report template.
+risk note per host. See `LAB-GUIDE.md` for the report template.
 
 ## Cleanup
 ```bash

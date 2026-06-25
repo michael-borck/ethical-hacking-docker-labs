@@ -1,5 +1,4 @@
 # Week 12: Social Engineering - Phishing Mitigation
-## CYB204 Ethical Hacking - Beginner Lab
 
 ---
 
@@ -27,7 +26,7 @@
 | :white_check_mark: **DO** | Only run this stack on the isolated `phish_net` (172.27.0.0/24). |
 | :white_check_mark: **DO** | "Send" mail only to the MailHog catch-all (`mailhog:1025`). |
 | :white_check_mark: **DO** | Use **fictional** employees you invent yourself. |
-| :white_check_mark: **DO** | Ask your instructor if anything looks unclear. |
+| :white_check_mark: **DO** | Check the README if anything looks unclear. |
 | :x: **DON'T** | Connect this network to the internet or a real mail server. |
 | :x: **DON'T** | Put a real person's name or email into GoPhish. |
 | :x: **DON'T** | Point the Sending Profile at any host except `mailhog`. |
@@ -264,4 +263,3 @@ Today you learned:
 **Remember:** These skills exist to *protect* people and organisations - never
 to attack them without permission.
 
-**Instructor Contact:** _____________________________________________

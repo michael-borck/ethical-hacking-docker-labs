@@ -1,5 +1,4 @@
 # Week 6: Introduction to Password Security
-## CYB204 Ethical Hacking - Beginner Lab
 
 ---
 
@@ -10,27 +9,26 @@
 ✅ **DO:** Ask for help if you get stuck  
 ✅ **DO:** Work with a partner if you want  
 ❌ **DON'T:** Test passwords on any real websites  
-❌ **DON'T:** Share any passwords you crack outside class  
+❌ **DON'T:** Share any passwords you crack outside this lab  
 
 ### **Quick Setup**
 ```bash
-# Step 1: Get the lab files
-git clone https://github.com/michael-borck/password-lab.git
-cd password-lab
+# Step 1: Clone the repo and enter the lab directory
+git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
+cd ethical-hacking-docker-labs/labs/week6
 
-# Step 2: Run the setup script
-chmod +x setup.sh
-./setup.sh
+# Step 2: (Optional) generate wordlists/hashes and fetch the rockyou sample
+chmod +x setup-script.sh
+./setup-script.sh
 
 # Step 3: Start the lab environment
-docker-compose up -d
+docker compose up -d
 
 # Step 4: Enter the container
-docker exec -it password-cracking-lab sh
+docker exec -it password-cracking-lab bash
 
 # Step 5: Check you're in the right place
 pwd
-# Should show: /
 ```
 
 **Check:** Can you see the command prompt? ✓ Yes ✓ No
@@ -255,18 +253,18 @@ Mark each scenario as LEGAL or ILLEGAL:
 | Testing passwords on your own computer | |
 | Trying to crack your friend's Facebook | |
 | Testing a company's security with written permission | |
-| Cracking passwords for a class assignment | |
+| Cracking passwords outside an authorized lab | |
 | Selling cracked passwords online | |
-| Testing your school's WiFi without permission | |
+| Testing your organization's WiFi without permission | |
 
 ### **Exercise 5.2: What Would You Do?**
 
-**Scenario:** While practicing, you accidentally discover your teacher's password is "password123".
+**Scenario:** While practicing, you accidentally discover a colleague's password is "password123".
 
 What should you do? (Circle one)
-- A) Tell everyone in class
-- B) Use it to change your grades
-- C) Privately tell the teacher they should change it
+- A) Tell everyone in the channel
+- B) Use it to log in as them
+- C) Privately tell them to change it
 - D) Post about it on social media
 
 **Why?** _________________________________
@@ -311,12 +309,12 @@ What should you do? (Circle one)
 exit
 
 # Stop the lab
-docker-compose down
+docker compose down
 ```
 
 ---
 
-## **Homework (Optional)**
+## **Extra Practice (Optional)**
 
 1. **Research:** Look up the "RockYou password breach". Write 3 things you learned:
    - _________________________________
@@ -334,7 +332,7 @@ docker-compose down
 
 ## **Summary**
 
-Today you learned:
+In this lab you learned:
 ✓ What password hashes are  
 ✓ How to crack weak passwords  
 ✓ Why strong passwords matter  
@@ -348,8 +346,6 @@ Today you learned:
 ## **Need Help?**
 
 - Can't get a command to work? Check for typos!
-- Getting errors? Ask your instructor or partner
+- Getting errors? Check the troubleshooting section
 - Confused about a concept? That's normal - ask questions!
-- Lab not working? Try: `docker-compose restart`
-
-**Instructor Contact:** _________________________________
+- Lab not working? Try: `docker compose restart`

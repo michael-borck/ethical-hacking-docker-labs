@@ -1,12 +1,11 @@
-# De-ICE S1.100 - Student Lab Worksheet
+# De-ICE S1.100 — Lab Guide
 
-**Name:** _________________________ **Date:** _____________
+**Notes:** _______________________________________________
 
 ## Lab Scenario
 You have been hired to perform a penetration test on De-ICE Corporation's web server. The CEO believes the system is secure since they run regular Nessus scans. Your job is to prove that automated scanning isn't enough.
 
-**Time Limit:** 2 hours  
-**Submission:** Complete this worksheet and submit your findings
+**Estimated time:** ~2 hours (self-paced)
 
 ## Pre-Lab Setup
 □ Start the lab environment: `docker compose up -d`  
@@ -15,7 +14,7 @@ You have been hired to perform a penetration test on De-ICE Corporation's web se
 
 ---
 
-## Phase 1: Reconnaissance (20 points)
+## Phase 1: Reconnaissance
 
 ### 1.1 Network Discovery
 Run a network scan to identify all hosts in the lab network.
@@ -51,7 +50,7 @@ _________________________________________________
 
 ---
 
-## Phase 2: Web Application Enumeration (15 points)
+## Phase 2: Web Application Enumeration
 
 ### 2.1 Web Content Analysis
 Examine the web application for useful information.
@@ -79,7 +78,7 @@ Based on the naming convention, create a username list.
 
 ---
 
-## Phase 3: FTP Enumeration (15 points)
+## Phase 3: FTP Enumeration
 
 ### 3.1 FTP Access
 Attempt to access the FTP service.
@@ -108,7 +107,7 @@ _________________________________________________
 
 ---
 
-## Phase 4: SSH Attack (25 points)
+## Phase 4: SSH Attack
 
 ### 4.1 Password List Creation
 Create a password list for brute force attacks.
@@ -142,7 +141,7 @@ id: _____________________
 
 ---
 
-## Phase 5: File Analysis (15 points)
+## Phase 5: File Analysis
 
 ### 5.1 System Exploration
 Explore the system for interesting files.
@@ -179,7 +178,7 @@ _________________________________________________
 
 ---
 
-## Phase 6: Analysis & Reporting (10 points)
+## Phase 6: Analysis & Reporting
 
 ### 6.1 Vulnerability Summary
 List the major vulnerabilities discovered:
@@ -220,7 +219,7 @@ Provide 3 key security recommendations:
 
 ---
 
-## Bonus Questions (Extra Credit - 5 points each)
+## Bonus Challenges
 
 1. **Pattern Analysis:** What pattern did you notice in the successful SSH password?
    _________________________________________________
@@ -234,27 +233,6 @@ Provide 3 key security recommendations:
 ---
 
 ## Lab Cleanup
-Before leaving:
+When finished:
 □ Document all findings  
-□ Stop the lab: `docker compose down`  
-□ Submit completed worksheet
-
----
-
-## Instructor Use Only
-
-**Grade Breakdown:**
-- Reconnaissance: ___/20
-- Web Enumeration: ___/15  
-- FTP Access: ___/15
-- SSH Attack: ___/25
-- File Analysis: ___/15
-- Analysis & Reporting: ___/10
-- Bonus: ___/15
-
-**Total Score: ___/100 (+ ___/15 bonus)**
-
-**Comments:**
-_________________________________________________
-_________________________________________________
-_________________________________________________
+□ Stop the lab: `docker compose down`

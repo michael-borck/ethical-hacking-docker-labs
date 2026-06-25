@@ -1,5 +1,4 @@
 # Week 2: Ethical and Legal Issues — Discussion Guide
-## CYB204 Ethical Hacking — Beginner Lab (No Docker)
 
 Welcome! This week has no computers to hack — just ideas to think about. That is
 because the law and ethics of hacking have to come *before* the tools. A person
@@ -23,7 +22,7 @@ provided. Plan on about 45 minutes.
 ✅ **DO:** Keep what you learn confidential — client data is not for show-and-tell.
 ❌ **DON'T:** Run *any* tool against a system you don't own just to "see what
    happens." Curiosity is not authorization.
-❌ **DON'T:** Assume "it's for a class" or "I'll only look, I won't change
+❌ **DON'T:** Assume "I work here" or "I'll only look, I won't change
    anything" makes access legal. It does not.
 ❌ **DON'T:** Reuse, publish, or share credentials, data, or vulnerabilities you
    find during a test.
@@ -72,13 +71,14 @@ a trespasser? Under the U.S. CFAA, the key question is usually whether she
 accessed a "protected computer" *without authorization* — and "I didn't have to
 hack hard" is not a defense.
 
-### Case Study 2 — "The Curious Student"
+### Case Study 2 — "The Curious Operator"
 
-> Jordan is taking a networking class and learns about port scanning. Wanting
-> to practice, he runs `nmap -sS scanme.university.edu` against his own
-> university's main web server from his dorm room. He doesn't find anything
-> interesting, so he moves on to scanning the registrar's server and the
-> library catalog. He never tries to log in to anything.
+> Jordan works in IT and has been learning about port scanning. Wanting to
+> practice, he first runs `nmap -sS scanme.nmap.org` — a host explicitly set up
+> for scanning practice. That works, so he then turns the same scanner on his
+> employer's public-facing web server from the office network. He doesn't find
+> anything interesting, so he moves on to scanning the customer portal and the
+> internal wiki. He never tries to log in to anything.
 
 **Is this legal or illegal?** _________________
 
@@ -88,9 +88,9 @@ ___________________________________________________________
 
 ___________________________________________________________
 
-**Things to weigh:** Does owning a student account on the university network
+**Things to weigh:** Does having an account on the corporate network
 count as authorization to scan it? Does it matter that `nmap -sS` (a SYN/"half
-open" scan) is stealthier than a normal scan? Many universities' acceptable-use
+open" scan) is stealthier than a normal scan? Many organizations' acceptable-use
 policies explicitly prohibit unauthorized scanning — and a policy violation can
 become a CFAA violation. The famous `scanme.nmap.org` host exists *because*
 its owner explicitly invites scanning; nothing else is scan-by-default.
@@ -309,9 +309,7 @@ Today you learned:
 ---
 
 ## Need Help?
-- Confused about a case study? Talk it through with a classmate — the
+- Confused about a case study? Talk it through with a peer — the
   disagreements are the point.
 - Not sure about an answer? Re-read the matching section of `README.md`.
 - Want to go deeper? Read the actual codes of ethics linked in the README.
-
-**Instructor Contact:** _________________________________

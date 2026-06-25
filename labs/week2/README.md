@@ -1,7 +1,7 @@
 # Week 2: Ethical and Legal Issues in Ethical Hacking
 
 ## Overview
-This is the only week in the course with no hands-on Docker lab, and that is
+This is the only week in the lab series with no hands-on Docker lab, and that is
 deliberate: before you ever run a scanner against a target, you must understand
 the law and the professional ethics that make the difference between an
 authorized security assessment and a federal crime. This week you will study the
@@ -116,7 +116,7 @@ Unauthorized access under the CFAA can carry:
 
 Professional penetration testing follows a standard six-phase lifecycle. The
 phases exist so that nothing technical happens until the legal and ethical
-groundwork is laid. Memorize the order — every later lab in this course sits
+groundwork is laid. Memorize the order — every later lab in this series sits
 inside **phase 4, execution**, and assumes phases 1–3 are already done.
 
 ```mermaid
@@ -148,7 +148,7 @@ out of scope, and **when** testing may occur. This is where you write down
 "`www.acme-logistics.example` is in scope; the third-party payment provider is
 not." Vague scope produces vague (and legally risky) testing.
 *Artefact:* the asset / scope list. *Decision locked in:* the precise target
-inventory and testing windows. Week 3 of this course is essentially a deep dive
+inventory and testing windows. Week 3 of this series is essentially a deep dive
 into scoping using captured traffic.
 
 ### 3. Rules of Engagement (RoE)
@@ -285,7 +285,7 @@ why.
 ### Activity 4 — Discussion guide and RoE template (30 min)
 Complete `discussion-guide.md` (case studies, RoE activity, dilemma, quiz) and
 fill in `rules-of-engagement-template.md` for the fictional company
-"Acme Logistics." Bring both to the next class — they form the basis of the
+"Acme Logistics." Keep both — they form the basis of the
 week 3 proposal-writing exercise.
 
 ## Cleanup

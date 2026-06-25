@@ -106,7 +106,7 @@ grep -i simulation /tmp/landing.html     # confirms the phish page was served
 
 ### 6. DEFENSIVE: read a delivered email and hunt the indicators (20 min)
 In MailHog, open a message and switch to the **Source** view (raw headers +
-body). Work through the indicator checklist in `STUDENT-WORKSHEET.md`
+body). Work through the indicator checklist in `LAB-GUIDE.md`
 (Defender view): spoofed display name, lookalike From domain, mismatched
 Reply-To, urgency, link text vs href mismatch, tracking pixel, and the
 credential-harvest landing page. Then turn those findings into a one-page

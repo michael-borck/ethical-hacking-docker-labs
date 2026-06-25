@@ -1,7 +1,7 @@
 services:
   # ─────────────────────────────────────────────────────────────────────────
   # Vulnerable target — compiles & runs the 32-bit BOF service with ALL
-  # modern protections disabled so students learn the classic exploit first.
+  # modern protections disabled so you learn the classic exploit first.
   # ─────────────────────────────────────────────────────────────────────────
   target:
     image: ubuntu:22.04

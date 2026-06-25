@@ -1,6 +1,4 @@
-# Week 9: Lateral Movement & Pivoting — Student Worksheet
-
-**Name:** _________________________   **Date:** _____________
+# Week 9: Lateral Movement & Pivoting
 
 ## Lab Scenario
 You have a foothold on **bastion**, a dual‑homed jump box that sits on two networks. Behind it
@@ -8,7 +6,7 @@ is a corporate intranet the customer wants you to prove is reachable. You are **
 to add new routes or touch firewalls — you must **pivot** through the bastion using SSH
 tunnels. Your workstation (`attacker`) can only see the external segment.
 
-**Time:** ~50 minutes   **Submission:** complete this worksheet and capture the flag.
+**Time:** ~50 minutes — work through each part and capture the flag.
 
 ---
 
@@ -243,7 +241,7 @@ Mark each scenario LEGAL or ILLEGAL:
 | Scenario | Legal? |
 |----------|--------|
 | Pivoting through a box you own in this Docker lab | |
-| Using `ssh -D` against a server at school without permission | |
+| Using `ssh -D` against a company server without permission | |
 | Running `autoroute` on a customer network named in your signed scope | |
 | Tunneling into a former employer's network after you quit | |
 | Reporting a tunnel you accidentally found to the owner | |
@@ -297,25 +295,3 @@ docker compose down
 ```
 - [ ] Flag captured and recorded above
 - [ ] Tunnels stopped / container torn down
-- [ ] Worksheet submitted
-
----
-
-## Instructor Use Only
-
-**Grade breakdown:**
-- Network mapping: ___/10
-- Local forward: ___/12
-- SOCKS + proxychains: ___/15
-- Flag capture: ___/10
-- Reverse tunnel bonus: ___/5
-- Metasploit matching: ___/8
-- Ethics: ___/10
-- Quiz: ___/20
-- Bonus db flag: ___/5
-
-**Total: ___/100 (+ ___/5 bonus)**
-
-**Comments:**
-_________________________________________________
-_________________________________________________

@@ -2,8 +2,8 @@
 
 ## Overview
 
-> **Read this first - the honest framing.** The contract for this course marks
-> *RFID simulation* as **future** work. Genuine RFID/NFC cloning requires
+> **Read this first - the honest framing.** Real RFID/NFC cloning is
+> **future** work for this lab series. It requires
 > physical radio hardware - a **Proxmark3**, **Flipper Zero**, ACR122U, or
 > TMD-5S reader - plus real 125 kHz cards and MIFARE tags. **None of that can
 > run inside a Docker container.** Rather than hand-wave, this lab builds a
@@ -40,7 +40,7 @@ attacker** workstation.
 | **Shoulder surfing** | Watching someone tap a badge / type a code, or reading it from afar. | How an attacker first learns the badge *format* to enumerate. |
 | **Lock types** | Mechanical key, PIN keypad, mag-stripe, RFID/NFC, biometric, multi-factor. | RFID readers are one rung on this ladder - and the weakest if cloning is easy. |
 | **125 kHz (prox)** | Legacy low-frequency cards (HID Prox, EM410x). UID broadcast **in the clear** every tap, trivially **cloned** to a blank. | The "replay" activity mirrors cloning one of these. |
-| **MIFARE (13.56 MHz)** | High-frequency, has crypto. **Classic** is broken (Cyrus/keys cracked); **DESFire/EV2** are far harder to clone. | Why defenders move to DESFire - and why the worksheet asks about it. |
+| **MIFARE (13.56 MHz)** | High-frequency, has crypto. **Classic** is broken (Cyrus/keys cracked); **DESFire/EV2** are far harder to clone. | Why defenders move to DESFire - and why the lab guide asks about it. |
 | **Cloning / replay** | Capturing a card's UID and retransmitting it (replay) or writing it to a writable blank (clone). | Activities (c) and (d). |
 | **Default / vendor credentials** | Devices ship with a master/service code (e.g. a factory HID, a known MIFARE key, a debug port). Forgotten at install. | Activity (d) - the hidden `DEAD:BE:EF` master. |
 
