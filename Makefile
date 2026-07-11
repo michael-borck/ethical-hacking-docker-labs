@@ -90,3 +90,6 @@ clean-all:
 
 # Down all + clean
 down-all: stop-all clean-all
+
+netmaps: ## Regenerate network-map SVGs (docs/diagrams/)
+	python3 tools/gen-netmap.py

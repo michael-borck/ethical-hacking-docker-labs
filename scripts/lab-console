@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+# ---------------------------------------------------------------------------
+# Ethical Hacking Labs — immersive console.
+#
+# Hides Docker: you "log in", pick a week, its environment powers on, and you
+# drop into the attacker workstation (or a browser tool). Real tools underneath;
+# you never type `docker`.
+#
+# Launched by ./start.sh.  Each week is a self-contained lab under labs/weekN/
+# with its own docker-compose. Pick a week with LAB_WEEK=NN, else you get a menu.
+# ---------------------------------------------------------------------------
+set -uo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LOG="$(mktemp -t eh-console.XXXXXX)"
+C_T='\033[1;36m'; C_OK='\033[0;32m'; C_WARN='\033[1;33m'; C_ERR='\033[0;31m'
+C_D='\033[0;90m'; C_P='\033[1;35m'; NC='\033[0m'
+
+# week -> "Title|entry|web-url"   entry: a service (shell) | @browser | @docs
+week_meta() {
+  case "$1" in
+    1)  echo "Setup & Security Toolkit|attacker|http://localhost:6080" ;;
+    2)  echo "Ethics & Law (reading + discussion)|@docs|" ;;
+    3)  echo "Traffic Analysis (Wireshark)|@browser|http://localhost:3000" ;;
+    4)  echo "Scanning Targets (nmap)|attacker|" ;;
+    5)  echo "System & Network Enumeration|attacker|" ;;
+    6)  echo "Password Cracking|hacking-tools|" ;;
+    7)  echo "Web App Vulnerabilities (DVWA / Juice Shop)|attacker|http://localhost:3012" ;;
+    8)  echo "Privilege Escalation (De-ICE)|attacker|" ;;
+    9)  echo "Lateral Movement & Pivoting|attacker|" ;;
+    10) echo "Exploit Development (buffer overflows)|attacker|" ;;
+    11) echo "Bypassing Physical Access|attacker|http://localhost:11180" ;;
+    12) echo "Social Engineering (phishing)|attacker|http://localhost:18025" ;;
+    *)  echo "" ;;
+  esac
+}
+WEEKS="1 2 3 4 5 6 7 8 9 10 11 12"
+
+banner() {
+  printf "${C_T}"
+  cat <<EOF
+
+  +===================================================================+
+  |           E T H I C A L   H A C K I N G   ·   L A B S             |
+  |                                                                   |
+  |   Week ${WEEK}: ${TITLE}
+  +===================================================================+
+EOF
+  printf "${NC}\n"
+}
+
+need_docker() {
+  command -v docker >/dev/null 2>&1 || { printf "${C_ERR}Docker isn't installed.${NC} https://www.docker.com/products/docker-desktop\n"; exit 1; }
+  docker info >/dev/null 2>&1 || { printf "${C_ERR}Docker isn't running.${NC} Start Docker Desktop and try again.\n"; exit 1; }
+}
+
+WDIR() { echo "$ROOT/labs/week$WEEK"; }
+has_compose() { [ -f "$(WDIR)/docker-compose.yml" ] || [ -f "$(WDIR)/docker-compose.yaml" ]; }
+
+choose_week() {
+  if [ -n "${LAB_WEEK:-}" ]; then echo "$LAB_WEEK"; return; fi
+  if [ ! -t 0 ]; then echo "1"; return; fi
+  printf "${C_T}Available labs:${NC}\n" >&2
+  for w in $WEEKS; do
+    IFS='|' read -r t e u <<EOF
+$(week_meta "$w")
+EOF
+    printf "   ${C_P}%2s${NC}  %s\n" "$w" "$t" >&2
+  done
+  local pick; read -r -p "$(printf 'Which week? ')" pick >&2
+  echo "$pick"
+}
+
+bring_up() {
+  if [ "$ENTRY" = "@docs" ]; then return; fi
+  if ! has_compose; then printf "${C_WARN}Week %s has no lab environment (docs only).${NC}\n" "$WEEK"; ENTRY="@docs"; return; fi
+  if [ -n "$(docker compose -f "$(WDIR)"/docker-compose.y*ml ls -q 2>/dev/null)" ] 2>/dev/null; then :; fi
+  printf "${C_D}Powering on the Week %s environment (first run pulls images)...${NC}\n" "$WEEK"
+  ( cd "$(WDIR)" && docker compose up -d ) >"$LOG" 2>&1 &
+  local pid=$!
+  while kill -0 "$pid" 2>/dev/null; do printf "."; sleep 1; done
+  printf "\n"
+  if ! wait "$pid"; then printf "${C_ERR}Could not start the lab. Details:${NC}\n"; tail -n 15 "$LOG"; exit 1; fi
+  printf "${C_OK}Environment up. You are logged in.${NC}\n"
+}
+
+dc() { ( cd "$(WDIR)" && docker compose "$@" ); }
+
+open_url() {
+  local url="${WEBURL:-}"
+  [ -n "$url" ] || { printf "${C_ERR}This lab has no browser tool.${NC}\n"; return; }
+  printf "${C_OK}Opening %s${NC}\n" "$url"
+  if command -v open >/dev/null 2>&1; then open "$url" >/dev/null 2>&1
+  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$url" >/dev/null 2>&1
+  elif command -v explorer.exe >/dev/null 2>&1; then explorer.exe "$url" >/dev/null 2>&1
+  else printf "${C_WARN}Open this in your browser:${NC} %s\n" "$url"; fi
+}
+
+do_connect() {
+  local svc="${1:-$ENTRY}"
+  case "$svc" in @browser|@docs|"") svc="$ENTRY" ;; esac
+  if [ "$ENTRY" = "@browser" ] && [ -z "${1:-}" ]; then
+    printf "${C_D}This lab is browser-based — type 'open' instead.${NC}\n"; return
+  fi
+  printf "${C_D}Opening a shell on %s (type 'exit' to come back)...${NC}\n" "$svc"
+  dc exec "$svc" bash 2>/dev/null || dc exec "$svc" sh 2>/dev/null \
+    || printf "${C_ERR}Couldn't open a shell on '%s'. Try: services${NC}\n" "$svc"
+}
+
+show_services() {
+  printf "${C_D}Running machines in this lab:${NC}\n"
+  dc ps --format 'table {{.Service}}\t{{.Status}}\t{{.Ports}}' 2>/dev/null | sed 's/^/  /'
+}
+
+show_help() {
+  cat <<EOF
+
+  ${C_P}connect [machine]${NC}   open a shell on the attacker box (or a named machine)
+  ${C_P}open${NC}               open this lab's browser tool${WEBURL:+  (${WEBURL})}
+  ${C_P}services${NC}           list the machines running in this lab
+  ${C_P}guide${NC}              where to find this week's lab guide
+  ${C_P}stop${NC}               shut this lab's machines down
+  ${C_P}help${NC}               this list
+  ${C_P}quit${NC}               leave
+
+EOF
+}
+
+repl() {
+  printf "\n${C_OK}Welcome%s.${NC} " "${ANALYST:+, $ANALYST}"
+  if [ "$ENTRY" = "@docs" ]; then
+    printf "This week is reading + discussion — see ${C_P}labs/week%s/README.md${NC}.\n" "$WEEK"
+  elif [ "$ENTRY" = "@browser" ]; then
+    printf "This lab runs in your browser: type ${C_P}open${NC} (${WEBURL}).\n"
+  else
+    printf "Type ${C_P}connect${NC} to drop into the attacker workstation."
+    [ -n "$WEBURL" ] && printf " Browser tool: ${C_P}open${NC} (${WEBURL})."
+    printf "\n"
+  fi
+  printf "Type ${C_P}help${NC} for commands.\n\n"
+  while true; do
+    printf "${C_P}lab>${NC} "
+    if ! read -r line; then break; fi
+    # shellcheck disable=SC2086
+    set -- $line; local cmd="${1:-}"; [ $# -gt 0 ] && shift || true
+    case "$cmd" in
+      "") : ;;
+      connect|shell) do_connect "${1:-}" ;;
+      open) open_url ;;
+      services|ps) show_services ;;
+      guide) printf "  labs/week%s/  (README.md / LAB-GUIDE.md)\n" "$WEEK" ;;
+      stop) dc down >/dev/null 2>&1; printf "${C_OK}Lab stopped.${NC}\n" ;;
+      help|\?) show_help ;;
+      quit|exit|logout) break ;;
+      *) printf "${C_ERR}unknown command: %s${NC}  (type 'help')\n" "$cmd" ;;
+    esac
+  done
+  printf "\n"
+  read -r -p "Shut this lab's machines down before leaving? (y/N) " a
+  case "$a" in [Yy]*) dc down >/dev/null 2>&1; printf "${C_OK}Stopped.${NC}\n" ;;
+    *) printf "${C_D}Left running. ./start.sh to return, or 'make stop-all'.${NC}\n" ;; esac
+}
+
+# --- main ------------------------------------------------------------------
+ANALYST="${1:-}"
+WEEK="$(choose_week)"
+META="$(week_meta "$WEEK")"
+[ -n "$META" ] || { printf "${C_ERR}No such week: %s${NC}\n" "$WEEK"; exit 1; }
+IFS='|' read -r TITLE ENTRY WEBURL <<EOF
+$META
+EOF
+banner
+need_docker
+if [ -z "$ANALYST" ] && [ -t 0 ]; then read -r -p "Enter your name (for the session): " ANALYST; fi
+bring_up
+repl

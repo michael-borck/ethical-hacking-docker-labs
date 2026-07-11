@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 404" font-family="system-ui" role="img" aria-label="Network map for week 05"><defs><style>:root{--surface:#fff;--ink:#14202e;--muted:#5b6775;--line:#c7d0dd;--accent:#256b64;--accent-soft:#d7ebe8;--z1:#e9f2ff;--z1l:#9cc0ef;--z2:#fdeee6;--z2l:#e6b48f;--z3:#e7f6ec;--z3l:#9dccae;}@media(prefers-color-scheme:dark){:root{--surface:#161f2c;--ink:#e6ecf3;--muted:#93a1b1;--line:#324357;--accent:#52b3a8;--accent-soft:#123531;--z1:#13233a;--z1l:#2f5680;--z2:#301f18;--z2l:#7a5237;--z3:#12271b;--z3l:#2f5c40;}}
+    .zone{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+    .z-a{fill:var(--z1);stroke:var(--z1l)} .z-b{fill:var(--z2);stroke:var(--z2l)}
+    .ztitle,.bus-t{font:700 12px system-ui;letter-spacing:.05em;fill:var(--muted)}
+    .gw{font:11px ui-monospace,Menlo,monospace;fill:var(--muted)}
+    .rail,.bus{stroke:var(--line);stroke-width:2}
+    .link{stroke:var(--accent);stroke-width:2;fill:none}
+    .route{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none;opacity:.7}
+    .dev{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+    .fw,.dev.fw{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+    .host{font:700 15px ui-monospace,Menlo,monospace;fill:var(--ink)}
+    .ip{font:12px ui-monospace,Menlo,monospace;fill:var(--muted)}
+    .port{font:11px system-ui;fill:var(--accent)}
+    .dot{fill:var(--muted)} .fwdot{fill:var(--accent)}
+    .fwt{font:800 14px system-ui;fill:var(--accent);letter-spacing:.04em}
+    .fws{font:11px system-ui;fill:var(--muted)}
+    .net-cloud{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+    .cloud-t{font:600 12px system-ui;fill:var(--muted)}
+    </style></defs><rect width="880" height="404" fill="var(--surface)" opacity="0"/><g><rect class="net-cloud" x="732" y="28" width="116" height="36" rx="18"/><text class="cloud-t" x="790" y="51" text-anchor="middle">☁ Internet</text></g><rect class="zone z-a" x="40" y="96" width="800" height="284" rx="16"/><text class="ztitle" x="64" y="124">LAB NETWORK · 172.22.0.0/24</text><text class="gw" x="64" y="366">gateway 172.22.0.1 → internet</text><path class="route" d="M790 64 V96"/><g><rect class="dev fw" x="162" y="136" width="168" height="58" rx="10"/><circle class="dot fwdot" cx="180" cy="156" r="4"/><text class="host" x="194" y="161">attacker</text><text class="ip" x="176" y="181">172.22.0.2</text></g><g><rect class="dev" x="356" y="136" width="168" height="58" rx="10"/><circle class="dot" cx="374" cy="156" r="4"/><text class="host" x="388" y="161">ldap</text><text class="ip" x="370" y="181">172.22.0.10</text><text class="port" x="370" y="128">browser → localhost:1389</text></g><g><rect class="dev" x="550" y="136" width="168" height="58" rx="10"/><circle class="dot" cx="568" cy="156" r="4"/><text class="host" x="582" y="161">ldap-admin</text><text class="ip" x="564" y="181">172.22.0.11</text><text class="port" x="564" y="128">browser → localhost:14081</text></g><g><rect class="dev" x="162" y="216" width="168" height="58" rx="10"/><circle class="dot" cx="180" cy="236" r="4"/><text class="host" x="194" y="241">mysql</text><text class="ip" x="176" y="261">172.22.0.12</text><text class="port" x="176" y="208">browser → localhost:23306</text></g><g><rect class="dev" x="356" y="216" width="168" height="58" rx="10"/><circle class="dot" cx="374" cy="236" r="4"/><text class="host" x="388" y="241">netshoot</text><text class="ip" x="370" y="261">172.22.0.15</text></g><g><rect class="dev" x="550" y="216" width="168" height="58" rx="10"/><circle class="dot" cx="568" cy="236" r="4"/><text class="host" x="582" y="241">smb</text><text class="ip" x="564" y="261">172.22.0.13</text></g><g><rect class="dev" x="162" y="296" width="168" height="58" rx="10"/><circle class="dot" cx="180" cy="316" r="4"/><text class="host" x="194" y="321">snmp</text><text class="ip" x="176" y="341">172.22.0.14</text></g></svg>
