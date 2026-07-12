@@ -236,3 +236,6 @@ Provide 3 key security recommendations:
 When finished:
 □ Document all findings  
 □ Stop the lab: `docker compose down`
+
+## Going further — Incident Zero
+Enjoyed owning the box? *Incident Zero*'s Hardening and Incident Response modules put you on the other side — close the gaps you just exploited and defend against them under pressure, the same tradecraft played as a game. ([Incident Zero](https://incidentzero.retroverse.studio/) — free, print-and-play.)

@@ -162,6 +162,18 @@
   .modal .pairs{margin:18px 0 0;font-size:13.5px;color:var(--muted)}
   .modal .mfoot{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
 
+  .series{border-top:1px solid var(--line);margin-top:48px;padding:34px 0 6px}
+  .series h2{font-size:20px;margin:0 0 4px}
+  .series .sub{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:62ch}
+  .series-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px}
+  .series-card{display:block;border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;background:var(--surface);text-decoration:none;color:var(--ink);transition:border-color .15s ease,transform .15s ease}
+  .series-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .series-card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .series-card .role{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:5px}
+  .series-card .nm{display:block;font-weight:650;font-size:14.5px}
+  .series-card .ds{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+  .series-card.here{background:var(--accent-soft);border-color:var(--accent);cursor:default}
+  .series-card.here:hover{transform:none}
   footer{border-top:1px solid var(--line);margin-top:48px;padding:26px 0 50px;color:var(--muted);font-size:13.5px}
   footer .fl{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </style>
@@ -173,6 +185,7 @@
     <div class="brand"><span class="dot"></span> Ethical&nbsp;Hacking&nbsp;Labs</div>
     <nav>
       <a href="#modules">Modules</a>
+      <a href="https://michael-borck.github.io/assume-breach/" target="_blank" rel="noopener">The book ↗</a>
       <a href="https://github.com/michael-borck/ethical-hacking-docker-labs" target="_blank" rel="noopener">GitHub ↗</a>
       <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme">◐</button>
     </nav>
@@ -283,6 +296,19 @@
   </div>
   <div class="grid" id="grid"></div>
 
+  <section class="series" id="series">
+    <h2>Part of the Assume-Breach series</h2>
+    <p class="sub">Four hands-on Docker labs across the security lifecycle — plus the book that frames them and a game that ties it together. Found one? Here's the rest.</p>
+    <div class="series-grid">
+      <div class="series-card here" aria-current="page"><span class="role">Offensive · break in</span><span class="nm">Ethical Hacking</span><span class="ds">You are here</span></div>
+      <a class="series-card" href="https://michael-borck.github.io/cybersecurity-lab-lateral-movement/"><span class="role">Offensive · move through</span><span class="nm">Lateral Movement</span><span class="ds">Pivot deeper once you have a foothold</span></a>
+      <a class="series-card" href="https://michael-borck.github.io/assume-breach-labs/"><span class="role">Defensive</span><span class="nm">Assume Breach</span><span class="ds">Defend assuming the attacker is already in</span></a>
+      <a class="series-card" href="https://michael-borck.github.io/forensics-docker-lab/"><span class="role">Post-breach</span><span class="nm">Digital Forensics</span><span class="ds">Reconstruct the incident from the evidence</span></a>
+      <a class="series-card" href="https://incidentzero.retroverse.studio/" target="_blank" rel="noopener"><span class="role">The game</span><span class="nm">Incident Zero ↗</span><span class="ds">Play the whole lifecycle — print &amp; play</span></a>
+      <a class="series-card" href="https://michael-borck.github.io/assume-breach/" target="_blank" rel="noopener"><span class="role">The book</span><span class="nm">Assume Breach ↗</span><span class="ds">The defender's-mindset thesis behind the labs</span></a>
+    </div>
+  </section>
+
   <footer>
     <div class="fl">
       <div>Ethical Hacking Labs · MIT licensed · unit-agnostic teaching material.</div>
@@ -298,7 +324,7 @@
 </div>
 
 <script>
-  const REPO = "https://github.com/michael-borck/ethical-hacking-docker-labs/blob/main/modules/";
+  const REPO = "https://github.com/michael-borck/ethical-hacking-docker-labs/blob/main/labs/";
   const MODULES = [
     { n:"01", slug:"week1", tag:"cli", title:"Setup & Security Toolkit",
       teaser:"Boot your attacker box and the browser-based Wireshark; verify the environment.",
@@ -372,6 +398,8 @@
       replaces:"Week 12.",
       run:["./start.sh → choose 12","Type open (GoPhish / MailHog)","Run the campaign"],
       cmds:["open","connect","services"], pairs:"—" },
+    { n:"13", tag:"game", title:"The Long Game", link:"https://incidentzero.retroverse.studio/",
+      teaser:"The capstone: play Incident Zero — the same recon-to-response fight, as a print-and-play game across the whole security lifecycle." },
   ];
 
   const chipLabel = t => t === "web" ? "Browser" : t === "docs" ? "Reading" : "Terminal";

@@ -7,7 +7,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ./caps:/caps
+      - ../../data/caps:/caps:ro  # Shared packet captures
     ports:
       - 3000:3000
     cap_add:
