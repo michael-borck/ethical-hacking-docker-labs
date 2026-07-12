@@ -23,23 +23,6 @@ services:
     volumes:
       - ./data:/home/wireshark
 
-  secutils:
-    image: michaelborck/secutils
-    container_name: secutils
-    privileged: true
-    command: ["/bin/sh", "-c", "/start.sh && exec /usr/bin/supervisord"]
-    ports:
-      - "6080:80"
-    environment:
-      - USER=root
-      - PASSWORD=rootpassword
-      - SSL=false
-    volumes:
-      - ./data:/root/Desktop/data
-    networks:
-      custom_network:
-        ipv4_address: 192.168.1.5
-
   attacker:
     image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week1-attacker

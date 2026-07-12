@@ -6,18 +6,18 @@ This repository contains a `docker-compose.yaml` file that sets up a Network Sec
 
 1. **proxy** (HAProxy): A high-performance and highly-robust TCP/HTTP load balancer. The configuration file is mapped from the local `haproxy.cfg` file.
 2. **wireshark** (ffeldhaus/wireshark): A Docker container running Wireshark with Xpra for remote access. It is connected to the proxy service and uses the same network.
-3. **secutils** (michaelborck/secutils): A Docker container containing various security utilities, including Wireshark, nmap, snort, hydra, nikto, wget, curl, ping, netcat, and sqlmap.. It is also connected to the custom network.
+3. **attacker** (ghcr.io/michael-borck/ethical-base): The shared Kali-based attacker workstation with the command-line security tools (nmap, hydra, nikto, netcat, curl, and more).
 
 ## Usage
 
 1. Install [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
 2. Clone this repository:
 ```
-git clone https://github.com/yourusername/network-security-toolkit.git
+git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
 ```
-3. Change to the cloned directory:
+3. Change to this lab's directory:
 ```
-cd network-security-toolkit
+cd ethical-hacking-docker-labs/labs/week1
 ```
 4. Create and start the services with Docker Compose:
 ```
@@ -38,14 +38,11 @@ docker-compose up -d
 - **Access password**: "wireshark"
 - **Captured files**: Stored in the local `./caps` directory
 
-### Security Utilities
+### Attacker Workstation
 
-- **IP address**: 192.168.1.5
-- **Port**: 6080
-- **Username**: root
-- **Password**: rootpassword
-- **SSL**: false
-- **Data directory**: Mapped to the local `./data` directory
+- **Image**: `ghcr.io/michael-borck/ethical-base`
+- **Container name**: `week1-attacker`
+- **Tools**: nmap, hydra, nikto, netcat, curl, and the rest of the CLI toolkit
 
 ## Custom Network Configuration
 
@@ -76,31 +73,18 @@ To access the Wireshark container remotely, follow these steps:
 
 Please note that the Wireshark container is connected to the proxy service, which listens on port 14500. Make sure the proxy service is up and running before attempting to connect to the Wireshark container.
 
-## Connecting to the Secutils Container
+## Connecting to the Attacker Workstation
 
-There are two ways to connect to the Secutils container:
-
-### Option 1: Command Line Interface
-
-1. Open a PowerShell or terminal window.
-
-2. Run the following command to access the Secutils container's Bash shell:
+Open a terminal and run the following command to get a shell on the Kali-based
+attacker box, where the command-line security tools are installed:
 
 ```
-docker exec -it secutils bash
+docker exec -it week1-attacker bash
 ```
 
-3. You can now use the command line tools available within the container, such as Wireshark, nmap, snort, hydra, nikto, wget, curl, ping, netcat, and sqlmap.
+From here you can use nmap, hydra, nikto, netcat, curl, and more. If you launched
+the lab with `./start.sh`, just type `connect` instead.
 
-### Option 2: Graphical User Interface
-
-1. Open your web browser and go to `http://localhost:6080`.
-
-2. Wait a few seconds for the graphical interface to load.
-
-3. you will now have access to the Linux container's graphical interface, where you can use the available security tools.
-
-Remember to ensure that the Secutils container is up and running before attempting to connect using either method.
 ## License
 
 This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.

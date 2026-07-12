@@ -34,20 +34,6 @@ services:
       security_net:
         ipv4_address: 172.20.0.3
 
-  secutils:
-    image: michaelborck/secutils
-    container_name: secutils
-    ports:
-      - "6081:80"
-    environment:
-      - USER=root
-      - PASSWORD=rootpassword
-      - SSL=false
-    command: ["/bin/sh", "-c", "/start.sh && exec /usr/bin/supervisord"]
-    networks:
-      security_net:
-        ipv4_address: 172.20.0.4
-
   attacker:
     image: ghcr.io/michael-borck/ethical-base:latest
     container_name: week7-attacker

@@ -19,7 +19,7 @@ C_D='\033[0;90m'; C_P='\033[1;35m'; NC='\033[0m'
 # week -> "Title|entry|web-url"   entry: a service (shell) | @browser | @docs
 week_meta() {
   case "$1" in
-    1)  echo "Setup & Security Toolkit|attacker|http://localhost:6080" ;;
+    1)  echo "Setup & Security Toolkit|attacker|http://localhost:14500" ;;
     2)  echo "Ethics & Law (reading + discussion)|@docs|" ;;
     3)  echo "Traffic Analysis (Wireshark)|@browser|http://localhost:3000" ;;
     4)  echo "Scanning Targets (nmap)|attacker|" ;;

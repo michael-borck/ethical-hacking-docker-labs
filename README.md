@@ -12,7 +12,7 @@ A hands-on, self-paced ethical hacking lab series — 12 Docker-based labs you c
 
 | Week | Topic | Lab Focus | Key Tools/Services |
 |------|--------|-----------|-------------------|
-| 1 | Setup Docker Environment | Basic setup with utils | HAProxy, Wireshark, SecUtils, Kali base |
+| 1 | Setup Docker Environment | Basic setup and toolkit check | Wireshark (browser), Kali base |
 | 2 | Ethical and legal issues | Readings and discussions | N/A (docs only) |
 | 3 | Scope and proposal development | Traffic analysis | Wireshark + sample captures |
 | 4 | Reporting and engagement close out | Scanning targets | Nmap on targets |

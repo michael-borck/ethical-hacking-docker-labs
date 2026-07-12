@@ -13,13 +13,13 @@ Before you begin, ensure you have the following installed on your system:
 1. Clone this repository:
 
    ```
-   git clone https://github.com/michaelborck-education/ethical-hacking-lab.git
+   git clone https://github.com/michael-borck/ethical-hacking-docker-labs.git
    ```
 
-2. Navigate to the cloned repository:
+2. Navigate to this lab's directory:
 
    ```
-   cd ethical-hacking-lab
+   cd ethical-hacking-docker-labs/labs/week7
    ```
 
 3. Start the Docker environment:
@@ -40,7 +40,7 @@ Before you begin, ensure you have the following installed on your system:
 |----------------|--------------------------------------------------------|----------------------------------------------------------|
 | Wireshark      | Network protocol analyser                              | `http://localhost:3000`                                  |
 | Workstation    | Basic Alpine Linux workstation                         | `docker exec -it workstation sh`                         |
-| SecUtils       | Basic security utilities                               | `docker exec -it secutils sh`                            |
+| Attacker       | Kali-based attacker workstation (CLI security tools)   | `docker exec -it week7-attacker bash`                    |
 | Netshoot       | Network troubleshooting container                      | `docker exec -it netshoot sh`                            |
 | Ubuntu Desktop | Ubuntu LXDE desktop environment                        | VNC: `localhost:5900`<br>NoVNC (browser): `http://localhost:6080` |
 | OpenLDAP       | LDAP server                                            | `ldap://localhost:389`                                   |
@@ -54,7 +54,7 @@ Before you begin, ensure you have the following installed on your system:
 
 1. **Wireshark**: Access the web-based Wireshark interface to analyse network traffic.
 
-2. **Workstation, SecUtils, and Netshoot**: Use these containers for various command-line operations and network troubleshooting. Access them using the `docker exec` command as shown in the table above.
+2. **Workstation, Attacker, and Netshoot**: Use these containers for various command-line operations and network troubleshooting. Access them using the `docker exec` command as shown in the table above.
 
 3. **Ubuntu Desktop**: Connect using a VNC client or access via a web browser for a graphical Linux environment.
 
