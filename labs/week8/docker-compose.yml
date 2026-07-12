@@ -25,8 +25,8 @@ services:
     image: httpd:2.4
     container_name: de-ice-web
     hostname: target-web
-    ports:
-      - "80:80"
+    # Port 80 is an internal target — reach it from the attacker container over lab_network
+    # (not published to the host, to avoid colliding with a local web server).
     volumes:
       - ./web-content:/usr/local/apache2/htdocs:ro
     networks:
@@ -81,8 +81,7 @@ services:
       tail -f /dev/null"
     volumes:
       - ./ftp-data:/data
-    ports:
-      - "21:21"
+    # FTP (21) is an internal target — reach it from the attacker container, not the host.
     networks:
       - lab_network
     restart: unless-stopped
@@ -102,9 +101,7 @@ services:
     image: dovecot/dovecot:latest
     container_name: de-ice-mail
     hostname: target-mail
-    ports:
-      - "110:110"   # POP3
-      - "143:143"   # IMAP
+    # POP3 (110) / IMAP (143) are internal targets — reach them from the attacker container.
     networks:
       - lab_network
     restart: unless-stopped

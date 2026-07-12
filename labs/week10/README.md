@@ -38,6 +38,10 @@ and from there, control flows wherever you point it.
 > The target compiles `/vuln` **32-bit x86** with `-fno-stack-protector
 > -z execstack -no-pie` and disables ASLR, so addresses are stable and the
 > stack is executable. The server auto-restarts after every crash.
+>
+> **Requirements:** the target runs `privileged` (to switch ASLR off via
+> `/proc/sys/.../randomize_va_space`) and is pinned to `linux/amd64` — so on
+> Apple Silicon it runs under emulation, which is expected and fine for this lab.
 
 ## Activities
 

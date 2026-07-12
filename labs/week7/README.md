@@ -43,10 +43,10 @@ Before you begin, ensure you have the following installed on your system:
 | Attacker       | Kali-based attacker workstation (CLI security tools)   | `docker exec -it week7-attacker bash`                    |
 | Netshoot       | Network troubleshooting container                      | `docker exec -it netshoot sh`                            |
 | Ubuntu Desktop | Ubuntu XFCE desktop in your browser                    | `http://localhost:6080` (no VNC client needed)           |
-| OpenLDAP       | LDAP server                                            | `ldap://localhost:389`                                   |
+| OpenLDAP       | LDAP server                                            | `ldap://localhost:10389`                                 |
 | MailHog        | Email testing tool                                     | `http://localhost:8025`                                  |
-| MySQL          | MySQL database server                                  | `mysql -h localhost -P 3306 -u user -p`                  |
-| Telnet         | Telnet server                                          | `telnet localhost 23`                                    |
+| MySQL          | MySQL database server                                  | `mysql -h localhost -P 13306 -u user -p`                 |
+| Telnet         | Telnet server                                          | `telnet localhost 2323`                                  |
 | OWASP Juice Shop | Web application security training platform           | `http://localhost:3012`                                  |
 | DVWA           | Damn Vulnerable Web Application                        | `http://localhost:8085` — first visit `/setup.php`, click Create Database |
 

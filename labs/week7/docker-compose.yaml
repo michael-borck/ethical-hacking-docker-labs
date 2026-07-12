@@ -76,7 +76,7 @@ services:
       LDAP_DOMAIN: "example.org"
       LDAP_ADMIN_PASSWORD: "admin"
     ports:
-      - "389:389"
+      - "10389:389" # host 10389 -> container 389 (avoids clashing with a local LDAP)
     networks:
       security_net:
         ipv4_address: 172.20.0.7
@@ -100,7 +100,7 @@ services:
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "userpassword"
     ports:
-      - "3306:3306"
+      - "13306:3306" # host 13306 -> container 3306 (avoids clashing with a local MySQL)
     networks:
       security_net:
         ipv4_address: 172.20.0.9
@@ -110,7 +110,7 @@ services:
     container_name: telnet
     command: sh -c "apk add --no-cache busybox-extras && /usr/sbin/telnetd -F"
     ports:
-      - "23:23"
+      - "2323:23" # host 2323 -> container 23 (avoids clashing with a local telnet)
     networks:
       security_net:
         ipv4_address: 172.20.0.10
