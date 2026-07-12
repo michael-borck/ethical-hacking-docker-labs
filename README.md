@@ -8,6 +8,10 @@
 
 **▶ Start here: https://michael-borck.github.io/ethical-hacking-docker-labs/** — or run `./start.sh`.
 
+> **Using an AI assistant?** Make it a thinking partner, not an autopilot — and never run a command you
+> can't explain. The series guide **[Learning with AI](https://github.com/michael-borck/security-labs/blob/main/LEARNING-WITH-AI.md)**
+> shows how, including how to repeat each lab until you don't need the assistant at all.
+
 A hands-on, self-paced ethical hacking lab series — 12 Docker-based labs you can run anywhere. Each lab lives in its own folder with a Docker Compose setup, a lab guide, and supporting resources.
 
 ## Labs
