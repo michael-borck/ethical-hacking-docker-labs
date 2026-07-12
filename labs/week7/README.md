@@ -42,13 +42,13 @@ Before you begin, ensure you have the following installed on your system:
 | Workstation    | Basic Alpine Linux workstation                         | `docker exec -it workstation sh`                         |
 | Attacker       | Kali-based attacker workstation (CLI security tools)   | `docker exec -it week7-attacker bash`                    |
 | Netshoot       | Network troubleshooting container                      | `docker exec -it netshoot sh`                            |
-| Ubuntu Desktop | Ubuntu LXDE desktop environment                        | VNC: `localhost:5900`<br>NoVNC (browser): `http://localhost:6080` |
+| Ubuntu Desktop | Ubuntu XFCE desktop in your browser                    | `http://localhost:6080` (no VNC client needed)           |
 | OpenLDAP       | LDAP server                                            | `ldap://localhost:389`                                   |
 | MailHog        | Email testing tool                                     | `http://localhost:8025`                                  |
 | MySQL          | MySQL database server                                  | `mysql -h localhost -P 3306 -u user -p`                  |
 | Telnet         | Telnet server                                          | `telnet localhost 23`                                    |
 | OWASP Juice Shop | Web application security training platform           | `http://localhost:3012`                                  |
-| DVWA           | Damn Vulnerable Web Application                        | `http://localhost:8085`                                  |
+| DVWA           | Damn Vulnerable Web Application                        | `http://localhost:8085` — first visit `/setup.php`, click Create Database |
 
 ## Usage Guidelines
 
@@ -56,7 +56,7 @@ Before you begin, ensure you have the following installed on your system:
 
 2. **Workstation, Attacker, and Netshoot**: Use these containers for various command-line operations and network troubleshooting. Access them using the `docker exec` command as shown in the table above.
 
-3. **Ubuntu Desktop**: Connect using a VNC client or access via a web browser for a graphical Linux environment.
+3. **Ubuntu Desktop**: Open `http://localhost:6080` in your browser for a graphical Linux environment — no VNC client or password needed.
 
 4. **OpenLDAP**: Use this for experimenting with LDAP authentication and directory services.
 

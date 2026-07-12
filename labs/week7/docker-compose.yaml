@@ -19,17 +19,19 @@ services:
         ipv4_address: 172.20.0.2
 
   ubuntu-desktop:
-    image: dorowu/ubuntu-desktop-lxde-vnc
+    image: lscr.io/linuxserver/webtop:ubuntu-xfce  # multi-arch (amd64+arm64), maintained; native on Apple Silicon
     container_name: ubuntu-desktop
     environment:
-      - USER=root
-      - PASSWORD=root
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
     ports:
-      - "5900:5900" # VNC port
-      - "6080:80" # Web interface (noVNC)
+      - "6080:3000" # Browser desktop: open http://localhost:6080
     volumes:
       - ./config:/config
     shm_size: "1gb"
+    security_opt:
+      - seccomp:unconfined
     networks:
       security_net:
         ipv4_address: 172.20.0.3
@@ -123,13 +125,29 @@ services:
         ipv4_address: 172.20.0.11
 
   dvwa:
-    image: vulnerables/web-dvwa
+    image: ghcr.io/digininja/dvwa:latest  # multi-arch (amd64+arm64); needs the dvwa-db service below
     container_name: dvwa
+    environment:
+      - DB_SERVER=dvwa-db
+    depends_on:
+      - dvwa-db
     ports:
-      - "8085:80"
+      - "8085:80" # browse http://localhost:8085 then /setup.php -> Create / Reset Database
     networks:
       security_net:
         ipv4_address: 172.20.0.12
+
+  dvwa-db:
+    image: mariadb:10
+    container_name: dvwa-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=dvwa
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=p@ssw0rd
+    networks:
+      security_net:
+        ipv4_address: 172.20.0.13
 
 networks:
   security_net:
