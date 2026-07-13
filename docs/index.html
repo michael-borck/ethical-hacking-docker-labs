@@ -78,6 +78,18 @@
 
   /* get started */
   .start{margin:8px 0 44px}
+  .start-acc{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+  .start-acc>summary{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:18px 22px;cursor:pointer;list-style:none;border-radius:var(--radius)}
+  .start-acc>summary::-webkit-details-marker{display:none}
+  .start-acc>summary:hover{background:var(--surface-2)}
+  .start-acc>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  .start-acc>summary .s-left{display:flex;align-items:baseline;gap:12px}
+  .start-acc>summary h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0}
+  .start-acc>summary .chev{color:var(--accent);font-size:15px;display:inline-block;transition:transform .15s ease}
+  .start-acc[open]>summary .chev{transform:rotate(90deg)}
+  .start-acc>summary .hint{margin:0;color:var(--muted);font-size:14px}
+  .start-acc .steps{padding:4px 22px 22px;margin-top:0}
   .steps{display:grid;gap:14px;margin-top:20px}
   .step{display:grid;grid-template-columns:auto 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);
     border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
@@ -223,7 +235,11 @@
   </section>
 
   <section class="start" id="start">
-    <div class="sec-h"><h2>Get started</h2><p>About 10 minutes — most of it Docker installing. Done once.</p></div>
+    <details class="start-acc" id="startAcc">
+      <summary>
+        <div class="s-left"><span class="chev" aria-hidden="true">▸</span><h2>Get started</h2></div>
+        <p class="hint">First time? About 10 minutes — most of it Docker installing. Done once.</p>
+      </summary>
     <div class="steps">
 
       <div class="step">
@@ -290,6 +306,7 @@
       </div>
 
     </div>
+    </details>
   </section>
 
   <div id="modules" class="sec-h">
@@ -507,6 +524,12 @@
   }
   osTabs.forEach(b => b.addEventListener("click", () => selectOS(b.dataset.os)));
   selectOS(os);
+
+  // "Get started" is collapsed by default — open it when someone navigates to it.
+  const startAcc = document.getElementById("startAcc");
+  document.querySelectorAll('a[href="#start"]').forEach(a =>
+    a.addEventListener("click", () => { startAcc.open = true; }));
+  if (location.hash === "#start") startAcc.open = true;
 
   const btn = document.getElementById("themeBtn");
   btn.addEventListener("click", () => {
