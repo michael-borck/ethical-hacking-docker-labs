@@ -13,8 +13,15 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$(mktemp -t eh-console.XXXXXX)"
-C_T='\033[1;36m'; C_OK='\033[0;32m'; C_WARN='\033[1;33m'; C_ERR='\033[0;31m'
-C_D='\033[0;90m'; C_P='\033[1;35m'; NC='\033[0m'
+# Real escape characters via $'...' so colours survive heredocs and plain echo
+# (a bare '\033' string only works inside printf format strings). No colours
+# when stdout isn't a terminal (piped output, CI).
+if [ -t 1 ]; then
+  C_T=$'\033[1;36m'; C_OK=$'\033[0;32m'; C_WARN=$'\033[1;33m'; C_ERR=$'\033[0;31m'
+  C_D=$'\033[0;90m'; C_P=$'\033[1;35m'; NC=$'\033[0m'
+else
+  C_T=''; C_OK=''; C_WARN=''; C_ERR=''; C_D=''; C_P=''; NC=''
+fi
 
 # week -> "Title|entry|web-url"   entry: a service (shell) | @browser | @docs
 week_meta() {
