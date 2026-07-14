@@ -259,6 +259,10 @@
           <p><a class="ziplink" href="https://github.com/michael-borck/ethical-hacking-docker-labs/archive/refs/heads/main.zip">⭳ Download the ZIP</a>,
             then unzip it. You'll get a folder named <span class="mono">ethical-hacking-docker-labs-main</span> —
             put it somewhere easy, like your Desktop.</p>
+          <p class="tip">On Windows, “Extract All” nests it one level deeper —
+            <span class="mono">ethical-hacking-docker-labs-main\ethical-hacking-docker-labs-main</span>. That's normal:
+            the <b>inner</b> folder (the one containing <span class="mono">start.bat</span>) is the one
+            you want. Move it somewhere easy and delete the empty outer one.</p>
         </div>
       </div>
 
@@ -285,14 +289,16 @@
 
           <div class="ospane" data-os="win">
             <ol>
-              <li>Docker Desktop installs <b>WSL2</b> — a built-in Ubuntu Linux. Open <b>Ubuntu</b> from the Start menu.</li>
-              <li>Go to your folder and launch it. For a folder on your Desktop:
-                <div><span class="cmd">cd /mnt/c/Users/YOUR-NAME/Desktop/ethical-hacking-docker-labs-main</span></div>
-                <div><span class="cmd">./start.sh</span></div></li>
+              <li>One-time: install
+                <a href="https://git-scm.com/download/win" target="_blank" rel="noopener">Git for Windows</a>
+                — it's the lab launcher. Run the installer and click <b>Next</b> through every
+                screen; the defaults are all fine.</li>
+              <li>Open the unzipped folder — the <b>inner</b> one, containing
+                <span class="mono">start.bat</span> — and double-click <span class="mono">start.bat</span>.</li>
             </ol>
-            <p class="tip">Simpler alternative: install
-              <a href="https://git-scm.com/download/win" target="_blank" rel="noopener">Git for Windows</a>,
-              then just double-click <span class="mono">start.bat</span> in the folder.</p>
+            <p class="tip">If a window flashes open and vanishes: right-click an empty spot inside the
+              folder → <b>Open in Terminal</b>, type <span class="cmd">.\start.bat</span> and press
+              Enter — the message stays on screen. It usually says Docker Desktop isn't running yet.</p>
           </div>
 
           <div class="ospane" data-os="linux">
