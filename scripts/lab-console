@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------
-# Ethical Hacking Labs — immersive console.
+# Ethical Hacking Labs — lab launcher.
 #
-# Hides Docker: you "log in", pick a week, its environment powers on, and you
-# drop into the attacker workstation (or a browser tool). Real tools underneath;
-# you never type `docker`.
+# A small launcher that hides Docker. Pick a week, its environment powers on,
+# and you drop into a REAL Kali attacker shell — the same nmap/john/hydra/gdb/ssh
+# a pentester uses. You never type `docker`; everything under the hood is real.
+# The launcher just adds a few lifecycle verbs (open a browser tool, list the
+# machines, stop the lab) so you don't have to remember Docker commands.
 #
 # Launched by ./start.sh.  Each week is a self-contained lab under labs/weekN/
 # with its own docker-compose. Pick a week with LAB_WEEK=NN, else you get a menu.
@@ -109,7 +111,7 @@ do_connect() {
   if [ "$ENTRY" = "@browser" ] && [ -z "${1:-}" ]; then
     printf "${C_D}This lab is browser-based — type 'open' instead.${NC}\n"; return
   fi
-  printf "${C_D}Opening a shell on %s (type 'exit' to come back)...${NC}\n" "$svc"
+  printf "${C_OK}Logging you in to the %s workstation.${NC} ${C_D}Type 'exit' to return to the launcher.${NC}\n\n" "$svc"
   dc exec "$svc" bash 2>/dev/null || dc exec "$svc" sh 2>/dev/null \
     || printf "${C_ERR}Couldn't open a shell on '%s'. Try: services${NC}\n" "$svc"
 }
@@ -137,14 +139,20 @@ repl() {
   printf "\n${C_OK}Welcome%s.${NC} " "${ANALYST:+, $ANALYST}"
   if [ "$ENTRY" = "@docs" ]; then
     printf "This week is reading + discussion — see ${C_P}labs/week%s/README.md${NC}.\n" "$WEEK"
+    printf "Type ${C_P}help${NC} for commands.\n\n"
   elif [ "$ENTRY" = "@browser" ]; then
     printf "This lab runs in your browser: type ${C_P}open${NC} (${WEBURL}).\n"
+    printf "Type ${C_P}help${NC} for commands.\n\n"
   else
-    printf "Type ${C_P}connect${NC} to drop into the attacker workstation."
-    [ -n "$WEBURL" ] && printf " Browser tool: ${C_P}open${NC} (${WEBURL})."
-    printf "\n"
+    # Shell-entry week: drop the student straight into the real Kali attacker
+    # shell. When they 'exit' that shell they land back here at the lab>
+    # launcher, where the lifecycle verbs (open/services/stop) live.
+    printf "Dropping you into the real Kali attacker shell.\n"
+    [ -n "$WEBURL" ] && printf "This week also has a browser tool: ${C_P}open${NC} (${WEBURL}).\n"
+    printf "${C_D}Back at the ${C_P}lab>${C_D} prompt: ${C_P}connect${C_D} to return to the shell, ${C_P}help${C_D} for more.${NC}\n"
+    do_connect
+    printf "\n${C_D}You're back at the launcher. Type ${C_P}connect${C_D} to reopen the shell, ${C_P}help${C_D} for commands.${NC}\n\n"
   fi
-  printf "Type ${C_P}help${NC} for commands.\n\n"
   while true; do
     printf "${C_P}lab>${NC} "
     if ! read -r line; then break; fi

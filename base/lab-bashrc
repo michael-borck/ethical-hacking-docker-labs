@@ -1,0 +1,16 @@
+# --- Ethical Hacking Labs: attacker-workstation feel (INTERACTIVE shells only) -
+# Installed as /etc/profile.d/00-eh-workstation.sh (for ssh login shells) and
+# appended to /etc/bash.bashrc (for the docker-exec attacker shell). sshd sources
+# bashrc even for a one-off `ssh host cmd`, so we guard on $- : only a real
+# interactive session gets the welcome banner + themed prompt. A non-interactive
+# `bash -c ...` or `ssh host cmd` (e.g. week 9 tunnels) stays clean — no banner.
+case $- in
+  *i*)
+    if [ -z "${EH_MOTD_SHOWN:-}" ]; then
+        [ -f /etc/motd-eh ] && cat /etc/motd-eh
+        export EH_MOTD_SHOWN=1
+    fi
+    # Kali-red username, blue path — reads as a dedicated attacker workstation.
+    PS1='\[\033[1;31m\]\u@\h\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ '
+    ;;
+esac

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Quick reference shown by the `labhelp` command. Generic — every week's
+# attacker builds from this base image, so this greets the student everywhere.
+cat <<EOF
+
+  ETHICAL HACKING — PENETRATION TESTING WORKSTATION
+  ------------------------------------------------------------------
+
+  WHERE YOU ARE
+    A real Kali Linux attacker shell. Nothing here is simulated — every
+    command is the genuine tool, so what you learn transfers straight to
+    the real world (and an AI assistant can help you, because the output
+    and errors are real, not invented lab verbs).
+
+  WHAT TO DO
+    Follow this week's guide:   labs/week<N>/LAB-GUIDE.md
+    It names your targets and walks each step. Do the work here, in this shell.
+
+  TOOLS ON THIS BOX  (a few of the ones you'll reach for)
+    nmap       port & service scanning        curl / wget   HTTP requests
+    hydra      online password guessing       john          offline cracking
+    sqlmap     SQL injection                   ssh           logins & tunnels
+    gobuster   content / directory discovery   nikto         web-server scan
+
+  SOME WEEKS ADD MORE
+    gdb          week 10 (exploit development) installs it
+    proxychains  week 9 (pivoting) installs it for tunnelled scans
+
+  Not sure what a tool does?  try  <tool> --help  or  man <tool>.
+  Type  exit  to return to the lab launcher.
+
+EOF

@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - base.Dockerfile
+      - base/**
       - .github/workflows/build-base.yml
   workflow_dispatch:
     inputs:
