@@ -10,7 +10,12 @@ case $- in
         [ -f /etc/motd-eh ] && cat /etc/motd-eh
         export EH_MOTD_SHOWN=1
     fi
-    # Kali-red username, blue path — reads as a dedicated attacker workstation.
+    # Prompt: Kali already ships its iconic themed pentest prompt in the user's
+    # ~/.bashrc (┌──(user㉿host)-[~]), sourced AFTER this file, so that's what the
+    # student sees — exactly the "attacker workstation" feel we want, and we don't
+    # touch ~/.bashrc. The line below is only a FALLBACK: it themes the prompt on
+    # any stripped shell that has no themed ~/.bashrc of its own (leaves Kali's
+    # native prompt untouched, since ~/.bashrc runs later and wins).
     PS1='\[\033[1;31m\]\u@\h\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ '
     ;;
 esac

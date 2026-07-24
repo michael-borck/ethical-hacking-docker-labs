@@ -30,11 +30,12 @@ RUN useradd -m -s /bin/bash hacker && \
     echo 'hacker:hacker' | chpasswd && \
     usermod -aG sudo hacker
 
-# Penetration-testing-workstation feel: a welcome banner, a generic `labhelp`
-# command, and a themed prompt on every INTERACTIVE shell. Installed for both
-# shell types — /etc/profile.d for ssh login shells, /etc/bash.bashrc for the
-# docker-exec attacker shell. The snippet is $--guarded so a non-interactive
-# `bash -c` or `ssh host cmd` (week 9 tunnels) stays clean, no banner spam.
+# Penetration-testing-workstation feel: a welcome banner + a generic `labhelp`
+# command on every INTERACTIVE shell (Kali's own ~/.bashrc already supplies the
+# iconic themed prompt, which we keep). Installed for both shell types —
+# /etc/profile.d for ssh login shells, /etc/bash.bashrc for the docker-exec
+# attacker shell. The snippet is $--guarded so a non-interactive `bash -c` or
+# `ssh host cmd` (week 9 tunnels) stays clean, no banner spam.
 # exFAT gives copied files mode 0700, so set 644/755 explicitly.
 COPY base/motd /etc/motd-eh
 COPY base/labhelp /usr/local/bin/labhelp
