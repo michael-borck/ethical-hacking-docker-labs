@@ -16,7 +16,13 @@ services:
     image: "ffeldhaus/wireshark:0.5"
     container_name: wireshark
     restart: always
-    privileged: true
+    # Capture needs raw-socket access, not the whole host. `privileged: true` was
+    # here and has been REMOVED: verified that dumpcap fails with "Operation not
+    # permitted" on no capabilities, and succeeds on these two — so these are what
+    # was actually doing the work. privileged grants far more besides.
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     network_mode: "service:proxy"
     environment:
       - XPRA_PW=wireshark

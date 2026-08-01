@@ -1,6 +1,6 @@
 services:
   wireshark:
-    image: lscr.io/linuxserver/wireshark:latest
+    image: lscr.io/linuxserver/wireshark:4.6.6-r0-ls319
     container_name: wireshark
     environment:
       - PUID=1000
@@ -23,7 +23,7 @@ services:
         ipv4_address: 172.20.0.2
 
   ubuntu-desktop:
-    image: lscr.io/linuxserver/webtop:ubuntu-xfce  # multi-arch (amd64+arm64), maintained; native on Apple Silicon
+    image: lscr.io/linuxserver/webtop@sha256:70b923d988f0f5a2e55a29706222ae5dcf6c9d9d78b2cc37d277d8612397d008  # multi-arch (amd64+arm64), maintained; native on Apple Silicon
     container_name: ubuntu-desktop
     environment:
       - PUID=1000
@@ -57,7 +57,7 @@ services:
       - seccomp:unconfined
 
   workstation:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: workstation
     command: /bin/sh -c "while true; do sleep 3600; done"
     networks:
@@ -65,7 +65,7 @@ services:
         ipv4_address: 172.20.0.5
 
   netshoot:
-    image: nicolaka/netshoot
+    image: nicolaka/netshoot:v0.13
     container_name: netshoot
     command: tail -f /dev/null # Keeps the container running
     networks:
@@ -77,7 +77,7 @@ services:
       - seccomp:unconfined # Allows for more system calls, useful for some networking tools
 
   ldap:
-    image: osixia/openldap
+    image: osixia/openldap:1.5.0
     container_name: ldap
     environment:
       LDAP_ORGANISATION: "Example Organization"
@@ -90,7 +90,7 @@ services:
         ipv4_address: 172.20.0.7
 
   mail:
-    image: mailhog/mailhog
+    image: mailhog/mailhog:v1.0.1
     container_name: mail
     ports:
       - "${LAB_BIND:-127.0.0.1}:8025:8025"
@@ -100,7 +100,7 @@ services:
         ipv4_address: 172.20.0.8
 
   mysql:
-    image: mysql:latest
+    image: mysql:8.0.43
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "rootpassword"
@@ -114,7 +114,7 @@ services:
         ipv4_address: 172.20.0.9
 
   telnet:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: telnet
     command: sh -c "apk add --no-cache busybox-extras && /usr/sbin/telnetd -F"
     ports:
@@ -124,7 +124,7 @@ services:
         ipv4_address: 172.20.0.10
 
   juice-shop:
-    image: bkimminich/juice-shop
+    image: bkimminich/juice-shop:v20.1.1
     container_name: juice-shop
     ports:
       - "${LAB_BIND:-127.0.0.1}:3012:3000"
@@ -133,7 +133,7 @@ services:
         ipv4_address: 172.20.0.11
 
   dvwa:
-    image: ghcr.io/digininja/dvwa:latest  # multi-arch (amd64+arm64); needs the dvwa-db service below
+    image: ghcr.io/digininja/dvwa@sha256:c7e272f2b6b617bd4446ee5439f525f8ba562c46ac9b1787609b45b68591d0f8  # multi-arch (amd64+arm64); needs the dvwa-db service below
     container_name: dvwa
     environment:
       - DB_SERVER=dvwa-db
@@ -146,7 +146,7 @@ services:
         ipv4_address: 172.20.0.12
 
   dvwa-db:
-    image: mariadb:10
+    image: mariadb:10.11.11
     container_name: dvwa-db
     environment:
       - MYSQL_ROOT_PASSWORD=dvwa

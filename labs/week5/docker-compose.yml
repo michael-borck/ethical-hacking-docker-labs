@@ -98,7 +98,7 @@ services:
   # ---- MySQL 8 target: 'employees' db with a sensitive 'salaries' table ----
   # Connect from the attacker:  mysql -h 172.22.0.12 -u root -p   (enumR0ot)
   mysql:
-    image: mysql:8
+    image: mysql:8.0.43
     container_name: week5-mysql
     hostname: mysql
     environment:
@@ -116,7 +116,7 @@ services:
   #   public  - anonymous read-only share
   #   staff   - read/write for user jdoe / Summer2024!
   smb:
-    image: ghcr.io/servercontainers/samba:smbd-only-latest
+    image: ghcr.io/servercontainers/samba@sha256:1215a7322d5f1c297b91d47fb3688c3e7f1eaccb2a34d99d42059e23a15bd02d
     container_name: week5-smb
     hostname: smb
     environment:
@@ -140,7 +140,7 @@ services:
   # Simulated router. The community string maps to the data-file name
   # (snmp/public.snmprec -> community "public"). Data dir mounted read-only.
   snmp:
-    image: tandrup/snmpsim
+    image: tandrup/snmpsim:v0.4
     container_name: week5-snmp
     hostname: snmp
     volumes:
@@ -151,7 +151,7 @@ services:
 
   # ---- netshoot: general-purpose network toolbox ----------------------------
   netshoot:
-    image: nicolaka/netshoot
+    image: nicolaka/netshoot:v0.13
     container_name: week5-netshoot
     hostname: netshoot
     command: tail -f /dev/null

@@ -80,7 +80,7 @@ services:
   # Seeded with a bonus secret. Internal segment only.
   # ------------------------------------------------------------------
   internal-db:
-    image: mysql:8
+    image: mysql:8.0.43
     container_name: week9-db
     hostname: internal-db
     environment:
@@ -97,7 +97,7 @@ services:
   # any client that connects on :8080. Internal segment only.
   # ------------------------------------------------------------------
   internal-flag:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: week9-flag
     hostname: internal-flag
     command: >

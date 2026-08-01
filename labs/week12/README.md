@@ -31,9 +31,17 @@ to spot the exact indicators a real phisher leaves behind.
    docker compose up -d
    ```
 3. Reach the two UIs:
-   - **GoPhish admin**: https://localhost:13333 - default login `admin / admin`
-     (self-signed TLS - accept the browser warning). **Change this password
-     now** in *Settings*.
+   - **GoPhish admin**: https://localhost:13333 (self-signed TLS - accept the
+     browser warning). GoPhish **generates a random password on first start**
+     and prints it to its log - it is not `admin/admin`. Read it with:
+
+     ```bash
+     docker compose logs gophish | grep "Please login"
+     ```
+
+     The username is `admin`. **Change the password** in *Settings* once you are
+     in. If you ever recreate the container from scratch, a new password is
+     generated and you read it the same way.
    - **MailHog inbox** (the simulated victim mailbox): http://localhost:18025
 4. Enter the attacker container for payload-crafting and email analysis:
    ```bash
@@ -48,8 +56,9 @@ to spot the exact indicators a real phisher leaves behind.
 
 ### 1. Start the stack and open both UIs (5 min)
 Check the three containers are up, then open the GoPhish admin UI and the
-MailHog inbox from Setup. Log in to GoPhish and change the `admin/admin`
-password.
+MailHog inbox from Setup. Recover the generated GoPhish password from its log
+(`docker compose logs gophish | grep "Please login"`), log in as `admin`, and
+change the password in *Settings*.
 
 ```bash
 docker compose ps          # gophish, mailhog, attacker should be "running"

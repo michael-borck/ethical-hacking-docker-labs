@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
 
   smtp:
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog:v1.0.1
     container_name: de-ice-smtp
     hostname: target-smtp
     ports:
@@ -98,7 +98,7 @@ services:
     restart: unless-stopped
 
   mail:
-    image: dovecot/dovecot:latest
+    image: dovecot/dovecot@sha256:68224562b701dccf31a7a5912017588673da0b1cedcdb8126443a38bad18bde9
     container_name: de-ice-mail
     hostname: target-mail
     # POP3 (110) / IMAP (143) are internal targets — reach them from the attacker container.

@@ -25,10 +25,13 @@
 
 services:
   # ---- GoPhish: phishing-simulation framework -------------------------------
-  # Admin UI:        https://localhost:13333  (default login admin/admin - CHANGE IT)
+  # Admin UI:        https://localhost:13333
+  #   GoPhish generates a RANDOM admin password on first start and logs it —
+  #   it is not admin/admin. Recover it with:
+  #       docker compose logs gophish | grep "Please login"
   # Phish server:    172.27.0.10:80           (internal only, NOT host-published)
   gophish:
-    image: gophish/gophish:latest
+    image: gophish/gophish:0.12.1
     container_name: week12-gophish
     hostname: gophish
     ports:
@@ -42,7 +45,7 @@ services:
   # Web UI (victim inbox): http://localhost:18025
   # SMTP (GoPhish -> here): 172.27.0.11:1025  (no auth, no real delivery)
   mailhog:
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog:v1.0.1
     container_name: week12-mailhog
     hostname: mailhog
     ports:

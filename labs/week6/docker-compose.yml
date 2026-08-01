@@ -41,7 +41,7 @@ services:
 
   # Web target for web-based password attacks
   web-target:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: web-target
     hostname: web-server
     networks:
