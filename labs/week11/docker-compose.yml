@@ -5,7 +5,7 @@ services:
     container_name: week11-access
     hostname: reader
     ports:
-      - "11180:80"
+      - "${LAB_BIND:-127.0.0.1}:11180:80"
     volumes:
       - ./access-control/app.py:/app/app.py:ro
       - ./valid_badges.txt:/app/valid_badges.txt:ro

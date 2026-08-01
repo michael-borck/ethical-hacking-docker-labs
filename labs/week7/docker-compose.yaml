@@ -6,10 +6,14 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+      # Without these the LinuxServer image serves this desktop — which has a
+      # terminal in it — with NO authentication at all. Verified.
+      - CUSTOM_USER=${LAB_GUI_USER:-analyst}
+      - PASSWORD=${LAB_GUI_PASSWORD:-labpass}
     volumes:
       - ../../data/caps:/caps:ro  # Shared packet captures
     ports:
-      - 3000:3000
+      - "${LAB_BIND:-127.0.0.1}:3000:3000"
     cap_add:
       - NET_ADMIN
     security_opt:
@@ -25,8 +29,12 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+      # Without these the LinuxServer image serves this desktop — which has a
+      # terminal in it — with NO authentication at all. Verified.
+      - CUSTOM_USER=${LAB_GUI_USER:-analyst}
+      - PASSWORD=${LAB_GUI_PASSWORD:-labpass}
     ports:
-      - "6080:3000" # Browser desktop: open http://localhost:6080
+      - "${LAB_BIND:-127.0.0.1}:6080:3000" # Browser desktop: open http://localhost:6080
     volumes:
       - ./config:/config
     shm_size: "1gb"
@@ -76,7 +84,7 @@ services:
       LDAP_DOMAIN: "example.org"
       LDAP_ADMIN_PASSWORD: "admin"
     ports:
-      - "10389:389" # host 10389 -> container 389 (avoids clashing with a local LDAP)
+      - "${LAB_BIND:-127.0.0.1}:10389:389" # host 10389 -> container 389 (avoids clashing with a local LDAP)
     networks:
       security_net:
         ipv4_address: 172.20.0.7
@@ -85,8 +93,8 @@ services:
     image: mailhog/mailhog
     container_name: mail
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - "${LAB_BIND:-127.0.0.1}:8025:8025"
+      - "${LAB_BIND:-127.0.0.1}:1025:1025"
     networks:
       security_net:
         ipv4_address: 172.20.0.8
@@ -100,7 +108,7 @@ services:
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "userpassword"
     ports:
-      - "13306:3306" # host 13306 -> container 3306 (avoids clashing with a local MySQL)
+      - "${LAB_BIND:-127.0.0.1}:13306:3306" # host 13306 -> container 3306 (avoids clashing with a local MySQL)
     networks:
       security_net:
         ipv4_address: 172.20.0.9
@@ -110,7 +118,7 @@ services:
     container_name: telnet
     command: sh -c "apk add --no-cache busybox-extras && /usr/sbin/telnetd -F"
     ports:
-      - "2323:23" # host 2323 -> container 23 (avoids clashing with a local telnet)
+      - "${LAB_BIND:-127.0.0.1}:2323:23" # host 2323 -> container 23 (avoids clashing with a local telnet)
     networks:
       security_net:
         ipv4_address: 172.20.0.10
@@ -119,7 +127,7 @@ services:
     image: bkimminich/juice-shop
     container_name: juice-shop
     ports:
-      - 3012:3000
+      - "${LAB_BIND:-127.0.0.1}:3012:3000"
     networks:
       security_net:
         ipv4_address: 172.20.0.11
@@ -132,7 +140,7 @@ services:
     depends_on:
       - dvwa-db
     ports:
-      - "8085:80" # browse http://localhost:8085 then /setup.php -> Create / Reset Database
+      - "${LAB_BIND:-127.0.0.1}:8085:80" # browse http://localhost:8085 then /setup.php -> Create / Reset Database
     networks:
       security_net:
         ipv4_address: 172.20.0.12

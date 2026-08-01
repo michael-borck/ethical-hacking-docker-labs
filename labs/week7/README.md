@@ -38,11 +38,11 @@ Before you begin, ensure you have the following installed on your system:
 
 | Service Name   | Description                                            | Access Method                                           |
 |----------------|--------------------------------------------------------|----------------------------------------------------------|
-| Wireshark      | Network protocol analyser                              | `http://localhost:3000`                                  |
+| Wireshark      | Network protocol analyser                              | `http://localhost:3000` — log in `analyst` / `labpass`   |
 | Workstation    | Basic Alpine Linux workstation                         | `docker exec -it workstation sh`                         |
 | Attacker       | Kali-based attacker workstation (CLI security tools)   | `docker exec -it week7-attacker bash`                    |
 | Netshoot       | Network troubleshooting container                      | `docker exec -it netshoot sh`                            |
-| Ubuntu Desktop | Ubuntu XFCE desktop in your browser                    | `http://localhost:6080` (no VNC client needed)           |
+| Ubuntu Desktop | Ubuntu XFCE desktop in your browser                    | `http://localhost:6080` — log in `analyst` / `labpass`   |
 | OpenLDAP       | LDAP server                                            | `ldap://localhost:10389`                                 |
 | MailHog        | Email testing tool                                     | `http://localhost:8025`                                  |
 | MySQL          | MySQL database server                                  | `mysql -h localhost -P 13306 -u user -p`                 |
@@ -56,7 +56,7 @@ Before you begin, ensure you have the following installed on your system:
 
 2. **Workstation, Attacker, and Netshoot**: Use these containers for various command-line operations and network troubleshooting. Access them using the `docker exec` command as shown in the table above.
 
-3. **Ubuntu Desktop**: Open `http://localhost:6080` in your browser for a graphical Linux environment — no VNC client or password needed.
+3. **Ubuntu Desktop**: Open `http://localhost:6080` in your browser for a graphical Linux environment — no VNC client needed. Log in with **`analyst` / `labpass`** (override via `LAB_GUI_USER` / `LAB_GUI_PASSWORD` in a `.env` file).
 
 4. **OpenLDAP**: Use this for experimenting with LDAP authentication and directory services.
 

@@ -51,7 +51,7 @@ services:
       service ssh start &&
       tail -f /dev/null"
     ports:
-      - "2222:22"
+      - "${LAB_BIND:-127.0.0.1}:2222:22"
     networks:
       - lab_network
     restart: unless-stopped
@@ -91,8 +91,8 @@ services:
     container_name: de-ice-smtp
     hostname: target-smtp
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
+      - "${LAB_BIND:-127.0.0.1}:1025:1025"  # SMTP
+      - "${LAB_BIND:-127.0.0.1}:8025:8025"  # Web UI
     networks:
       - lab_network
     restart: unless-stopped

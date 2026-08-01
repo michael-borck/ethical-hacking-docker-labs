@@ -13,7 +13,7 @@ services:
     hostname: target
     privileged: true          # required to write /proc/sys/.../randomize_va_space
     ports:
-      - "24444:4444"
+      - "${LAB_BIND:-127.0.0.1}:24444:4444"
     volumes:
       - ./vuln-server.c:/vuln-server.c:ro
     environment:

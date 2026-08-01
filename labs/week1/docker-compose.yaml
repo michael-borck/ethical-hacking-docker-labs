@@ -5,7 +5,7 @@ services:
     container_name: proxy
     restart: always
     ports:
-      - 14500:14500
+      - "${LAB_BIND:-127.0.0.1}:14500:14500"
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:Z
     networks:

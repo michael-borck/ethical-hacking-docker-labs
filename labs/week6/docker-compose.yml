@@ -47,7 +47,7 @@ services:
     networks:
       - labnet
     ports:
-      - "8080:80"
+      - "${LAB_BIND:-127.0.0.1}:8080:80"
     command: /bin/sh -c "
       apk update &&
       apk add --no-cache python3 &&

@@ -5,3 +5,5 @@ __pycache__/
 *.py[cod]
 # Editor / OS cruft
 .DS_Store
+# Local env overrides — holds LAB_GUI_PASSWORD, must never be committed
+.env

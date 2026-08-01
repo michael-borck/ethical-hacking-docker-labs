@@ -11,7 +11,8 @@ This lab focuses on analyzing captured network traffic using Wireshark to inform
 ## Setup (2 min)
 1. Ensure base built: `make build-base` (from root).
 2. Start lab: From root, `cd labs/week3 && docker compose up -d`
-3. Access Wireshark: http://localhost:3000 (default creds: admin/admin or configure in env).
+3. Access Wireshark: http://localhost:3000 — log in with **`analyst` / `labpass`**.
+   (Override with `LAB_GUI_USER` / `LAB_GUI_PASSWORD` in a `.env` file.)
 4. Sample target runs on 172.30.0.3 for live capture practice.
 
 ## Activities

@@ -38,7 +38,7 @@ services:
     environment:
       - DEBIAN_FRONTEND=noninteractive
     ports:
-      - "23022:22"
+      - "${LAB_BIND:-127.0.0.1}:23022:22"
     command: >
       /bin/bash -c "
       apt-get update &&

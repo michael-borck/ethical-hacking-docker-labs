@@ -74,7 +74,7 @@ services:
     volumes:
       - ./ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
     ports:
-      - "1389:389"
+      - "${LAB_BIND:-127.0.0.1}:1389:389"
     networks:
       enum_net:
         ipv4_address: 172.22.0.10
@@ -88,7 +88,7 @@ services:
     environment:
       - PHPLDAPADMIN_LDAP_HOST=ldap
     ports:
-      - "14081:80"
+      - "${LAB_BIND:-127.0.0.1}:14081:80"
     depends_on:
       - ldap
     networks:
@@ -107,7 +107,7 @@ services:
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d:ro
     ports:
-      - "23306:3306"
+      - "${LAB_BIND:-127.0.0.1}:23306:3306"
     networks:
       enum_net:
         ipv4_address: 172.22.0.12

@@ -7,10 +7,14 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+      # Without these the LinuxServer image serves this desktop — which has a
+      # terminal in it — with NO authentication at all. Verified.
+      - CUSTOM_USER=${LAB_GUI_USER:-analyst}
+      - PASSWORD=${LAB_GUI_PASSWORD:-labpass}
     volumes:
       - ../../data/caps:/caps:ro  # Shared packet captures
     ports:
-      - 3000:3000
+      - "${LAB_BIND:-127.0.0.1}:3000:3000"
     cap_add:
       - NET_ADMIN
     security_opt:

@@ -32,7 +32,7 @@ services:
     container_name: week12-gophish
     hostname: gophish
     ports:
-      - "13333:3333"          # admin UI (host:container) - contract sec 6
+      - "${LAB_BIND:-127.0.0.1}:13333:3333"          # admin UI (host:container) - contract sec 6
     networks:
       phish_net:
         ipv4_address: 172.27.0.10
@@ -46,8 +46,8 @@ services:
     container_name: week12-mailhog
     hostname: mailhog
     ports:
-      - "18025:8025"          # web UI (host:container) - contract sec 6
-      - "11025:1025"          # SMTP   (host:container) - contract sec 6
+      - "${LAB_BIND:-127.0.0.1}:18025:8025"          # web UI (host:container) - contract sec 6
+      - "${LAB_BIND:-127.0.0.1}:11025:1025"          # SMTP   (host:container) - contract sec 6
     networks:
       phish_net:
         ipv4_address: 172.27.0.11
