@@ -5,13 +5,21 @@
 # it locally instead (offline, or to customise the tools), run `make build-base`.
 BASE_IMAGE ?= ghcr.io/michael-borck/ethical-base:latest
 
+# Container engine: Docker by default; set CONTAINER_ENGINE=podman to use Podman.
+ENGINE ?= $(if $(CONTAINER_ENGINE),$(CONTAINER_ENGINE),$(shell command -v docker >/dev/null 2>&1 && echo docker || echo podman))
+ifeq ($(ENGINE),podman)
+COMPOSE := $(shell podman compose version >/dev/null 2>&1 && echo "podman compose" || echo "podman-compose")
+else
+COMPOSE := docker compose
+endif
+
 # Build the shared base image locally, tagged as BASE_IMAGE so compose picks it up
 build-base:
-	docker build -f base.Dockerfile -t $(BASE_IMAGE) .
+	$(ENGINE) build -f base.Dockerfile -t $(BASE_IMAGE) .
 
 # Pull the latest prebuilt base image from GHCR
 pull-base:
-	docker pull $(BASE_IMAGE)
+	$(ENGINE) pull $(BASE_IMAGE)
 
 # Shared recipe: start a week's compose if present, otherwise print a clear message.
 # Looks for either docker-compose.yml or docker-compose.yaml so it works for every week.
@@ -19,7 +27,7 @@ define WEEK_RECIPE
 	@week=$(1); \
 	if [ -f "labs/week$$week/docker-compose.yml" ] || [ -f "labs/week$$week/docker-compose.yaml" ]; then \
 		echo "==> Starting week $$week"; \
-		(cd labs/week$$week && docker compose up -d); \
+		(cd labs/week$$week && $(COMPOSE) up -d); \
 	elif [ "$$week" = "2" ]; then \
 		echo "==> Week 2 is docs-only (ethics & law). Open labs/week2/README.md and complete the discussion guide."; \
 	else \
@@ -58,7 +66,7 @@ build-all:
 	@for week in $$(seq 1 12); do \
 		if [ -f "labs/week$$week/Dockerfile" ]; then \
 			echo "==> Building labs/week$$week"; \
-			(cd labs/week$$week && docker compose build); \
+			(cd labs/week$$week && $(COMPOSE) build); \
 		fi; \
 	done
 
@@ -67,7 +75,7 @@ stop-all:
 	@for week in $$(seq 1 12); do \
 		if [ -f "labs/week$$week/docker-compose.yml" ] || [ -f "labs/week$$week/docker-compose.yaml" ]; then \
 			echo "==> Stopping week $$week"; \
-			(cd labs/week$$week && docker compose down 2>/dev/null || true); \
+			(cd labs/week$$week && $(COMPOSE) down 2>/dev/null || true); \
 		fi; \
 	done
 
@@ -86,7 +94,7 @@ status:
 
 # Clean unused images
 clean-all:
-	docker system prune -f
+	$(ENGINE) system prune -f
 
 # Down all + clean
 down-all: stop-all clean-all

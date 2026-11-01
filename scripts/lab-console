@@ -2,14 +2,16 @@
 # ---------------------------------------------------------------------------
 # Ethical Hacking Labs — lab launcher.
 #
-# A small launcher that hides Docker. Pick a week, its environment powers on,
-# and you drop into a REAL Kali attacker shell — the same nmap/john/hydra/gdb/ssh
-# a pentester uses. You never type `docker`; everything under the hood is real.
-# The launcher just adds a few lifecycle verbs (open a browser tool, list the
-# machines, stop the lab) so you don't have to remember Docker commands.
+# A small launcher that hides the container engine. Pick a week, its environment
+# powers on, and you drop into a REAL Kali attacker shell — the same
+# nmap/john/hydra/gdb/ssh a pentester uses. You never type `docker`; everything
+# under the hood is real. The launcher just adds a few lifecycle verbs (open a
+# browser tool, list the machines, stop the lab) so you don't have to remember
+# engine commands.
 #
 # Launched by ./start.sh.  Each week is a self-contained lab under labs/weekN/
 # with its own docker-compose. Pick a week with LAB_WEEK=NN, else you get a menu.
+# Docker is the default engine; Podman is supported with CONTAINER_ENGINE=podman.
 # ---------------------------------------------------------------------------
 set -uo pipefail
 
@@ -24,6 +26,46 @@ if [ -t 1 ]; then
 else
   C_T=''; C_OK=''; C_WARN=''; C_ERR=''; C_D=''; C_P=''; NC=''
 fi
+
+# --- container engine ------------------------------------------------------
+# Docker by default; Podman fully supported. The compose files are engine-neutral
+# specs, so only the command changes.
+ENGINE="${CONTAINER_ENGINE:-}"
+if [ -z "$ENGINE" ]; then
+  if command -v docker >/dev/null 2>&1; then ENGINE=docker
+  elif command -v podman >/dev/null 2>&1; then ENGINE=podman
+  fi
+fi
+
+# Point Compose v2 at Podman's Docker-compatible socket when no native
+# podman-compose is available.
+ensure_podman_socket() {
+  local sock="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/podman/podman.sock"
+  mkdir -p "$(dirname "$sock")"
+  if [ ! -S "$sock" ]; then
+    systemctl --user enable --now podman.socket >/dev/null 2>&1 || true
+    for _ in 1 2 3 4 5; do [ -S "$sock" ] && break; sleep 1; done
+  fi
+  [ -S "$sock" ] || return 1
+  export DOCKER_HOST="unix://$sock"
+}
+
+resolve_compose() {
+  COMPOSE=()
+  case "$ENGINE" in
+    docker)
+      if docker compose version >/dev/null 2>&1; then COMPOSE=(docker compose)
+      elif command -v docker-compose >/dev/null 2>&1; then COMPOSE=(docker-compose)
+      fi ;;
+    podman)
+      if podman compose version >/dev/null 2>&1; then COMPOSE=(podman compose)
+      elif command -v podman-compose >/dev/null 2>&1; then COMPOSE=(podman-compose)
+      elif command -v docker-compose >/dev/null 2>&1 && ensure_podman_socket; then
+        COMPOSE=(docker-compose)
+      fi ;;
+  esac
+}
+resolve_compose
 
 # week -> "Title|entry|web-url"   entry: a service (shell) | @browser | @docs
 week_meta() {
@@ -58,9 +100,48 @@ EOF
   printf "${NC}\n"
 }
 
-need_docker() {
-  command -v docker >/dev/null 2>&1 || { printf "${C_ERR}Docker isn't installed.${NC} https://www.docker.com/products/docker-desktop\n"; exit 1; }
-  docker info >/dev/null 2>&1 || { printf "${C_ERR}Docker isn't running.${NC} Start Docker Desktop and try again.\n"; exit 1; }
+need_engine() {
+  [ -n "$ENGINE" ] || { printf "${C_ERR}Neither Docker nor Podman was found on this machine.${NC}\n"; exit 1; }
+  command -v "$ENGINE" >/dev/null 2>&1 || {
+    if [ "$ENGINE" = podman ]; then
+      printf "${C_ERR}Podman isn't installed.${NC} https://podman.io/getting-started/installation\n"
+    else
+      printf "${C_ERR}Docker isn't installed.${NC} https://www.docker.com/products/docker-desktop\n"
+    fi
+    exit 1
+  }
+  if ! "$ENGINE" info >/dev/null 2>&1; then
+    if [ "$ENGINE" = podman ]; then
+      printf "${C_ERR}Podman isn't ready.${NC} On macOS/Windows run: podman machine start\n"
+    else
+      printf "${C_ERR}Docker isn't running.${NC} Start Docker Desktop and try again.\n"
+    fi
+    exit 1
+  fi
+  if [ "${#COMPOSE[@]}" -eq 0 ]; then
+    printf "${C_ERR}No Compose front-end found for %s.${NC}\n" "$ENGINE"
+    printf "  Docker: install Docker Compose v2 (or docker-compose).\n"
+    printf "  Podman: install podman-compose, or Docker Compose v2 for the Podman socket.\n"
+    exit 1
+  fi
+}
+
+# Week 10 needs privileges and an amd64 kernel ABI. Warn early rather than
+# failing halfway through the inline build.
+check_week_requirements() {
+  [ "$WEEK" = "10" ] || return 0
+  if [ "$ENGINE" = podman ]; then
+    if [ "$(podman info --format '{{.Host.Security.Rootless}}' 2>/dev/null)" = "true" ]; then
+      printf "${C_WARN}Week 10 needs rootful Podman (privileged + ASLR sysctl).${NC}\n"
+      printf "  macOS/Windows: podman machine set --rootful && podman machine stop && podman machine start\n"
+      printf "  Linux: run make/start.sh as root, or sudo podman ...\n"
+    fi
+  fi
+  case "$(uname -m)" in
+    arm64|aarch64)
+      printf "${C_D}Week 10 target is linux/amd64; it runs under emulation on this host.${NC}\n"
+      printf "${C_D}If it fails with 'exec format error', enable binfmt/qemu-user-static in your engine.${NC}\n" ;;
+  esac
 }
 
 WDIR() { echo "$ROOT/labs/week$WEEK"; }
@@ -83,9 +164,9 @@ EOF
 bring_up() {
   if [ "$ENTRY" = "@docs" ]; then return; fi
   if ! has_compose; then printf "${C_WARN}Week %s has no lab environment (docs only).${NC}\n" "$WEEK"; ENTRY="@docs"; return; fi
-  if [ -n "$(docker compose -f "$(WDIR)"/docker-compose.y*ml ls -q 2>/dev/null)" ] 2>/dev/null; then :; fi
+  check_week_requirements
   printf "${C_D}Powering on the Week %s environment (first run pulls images)...${NC}\n" "$WEEK"
-  ( cd "$(WDIR)" && docker compose up -d ) >"$LOG" 2>&1 &
+  dc up -d >"$LOG" 2>&1 &
   local pid=$!
   while kill -0 "$pid" 2>/dev/null; do printf "."; sleep 1; done
   printf "\n"
@@ -93,7 +174,7 @@ bring_up() {
   printf "${C_OK}Environment up. You are logged in.${NC}\n"
 }
 
-dc() { ( cd "$(WDIR)" && docker compose "$@" ); }
+dc() { ( cd "$(WDIR)" && "${COMPOSE[@]}" "$@" ); }
 
 open_url() {
   local url="${WEBURL:-}"
@@ -185,7 +266,7 @@ IFS='|' read -r TITLE ENTRY WEBURL <<EOF
 $META
 EOF
 banner
-need_docker
+need_engine
 if [ -z "$ANALYST" ] && [ -t 0 ]; then read -r -p "Enter your name (for the session): " ANALYST; fi
 bring_up
 repl

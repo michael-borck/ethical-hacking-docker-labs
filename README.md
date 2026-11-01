@@ -56,6 +56,12 @@ All labs share a base Kali image, `ghcr.io/michael-borck/ethical-base`, built fr
 
 Repo-root convenience targets: `make run-weekN` (start week *N*), `make status` (list all weeks), `make pull-base` (refresh the base image), `make build-base` (build the base locally).
 
+### Podman
+
+The launcher and Makefile support Podman. Use `CONTAINER_ENGINE=podman ./start.sh`, or `CONTAINER_ENGINE=podman make run-week4`. You need a compose front-end (`podman compose` or `podman-compose`) and, on macOS/Windows, a running Podman machine.
+
+Week 10 (buffer overflow) needs **rootful** Podman: the target is `privileged` so it can disable ASLR, and it is a `linux/amd64` image. On Apple Silicon, enable binfmt/`qemu-user-static` in the Podman machine first. Week 1's `network_mode: service:` requires podman-compose 1.0.6 or newer.
+
 ### Lab Status
 All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `LAB-GUIDE.md`, and any seed files its services need.
 
@@ -75,7 +81,7 @@ cd ethical-hacking-docker-labs/labs/week6
 docker compose up -d        # pulls the base image + targets
 docker exec -it password-cracking-lab bash
 ```
-Run in an isolated environment. You only need Docker installed — no local build step.
+Run in an isolated environment. You only need Docker (or Podman) installed — no local build step.
 
 **Note**: Educational only. Follow ethics; no real-world testing without permission.
 
