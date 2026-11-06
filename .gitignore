@@ -7,3 +7,7 @@ __pycache__/
 .DS_Store
 # Local env overrides — holds LAB_GUI_PASSWORD, must never be committed
 .env
+
+# Offline image packs
+images/
+dist/

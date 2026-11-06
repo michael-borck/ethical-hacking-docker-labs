@@ -58,9 +58,18 @@ Repo-root convenience targets: `make run-weekN` (start week *N*), `make status` 
 
 ### Podman
 
-The launcher and Makefile support Podman. Use `CONTAINER_ENGINE=podman ./start.sh`, or `CONTAINER_ENGINE=podman make run-week4`. You need a compose front-end (`podman compose` or `podman-compose`) and, on macOS/Windows, a running Podman machine.
+The launcher and Makefile support Podman. Use `CONTAINER_ENGINE=podman ./start.sh`, or `CONTAINER_ENGINE=podman make run-week4`. You need a compose front-end (`podman compose` or `podman-compose`) and, on macOS/Windows, a running Podman machine. If none is installed, `./start.sh` offers `bash scripts/setup-user.sh` (no root).
 
 Week 10 (buffer overflow) needs **rootful** Podman: the target is `privileged` so it can disable ASLR, and it is a `linux/amd64` image. On Apple Silicon, enable binfmt/`qemu-user-static` in the Podman machine first. Week 1's `network_mode: service:` requires podman-compose 1.0.6 or newer.
+
+If GHCR is blocked, build a student ZIP on a machine with registry access:
+
+```bash
+./scripts/make-offline-zip.sh 4      # one week
+./scripts/make-offline-zip.sh all    # every week (large)
+```
+
+Students unzip it and run `./start.sh`; the launcher loads `images/` with `podman load` before starting.
 
 ### Lab Status
 All 12 weeks are implemented. Week 2 is docs-only (ethics & law); weeks 1 and 3–12 are hands-on Docker labs. Run `make status` from the repo root to see which weeks are ready and their start commands. Each hands-on lab ships a `README.md`, a `LAB-GUIDE.md`, and any seed files its services need.
